@@ -12,6 +12,8 @@ Then right click on the project and 'Build'. The project includes a custom 'mani
 Running wisard
 ==============
 
+
+
 Copy 'Wisard.jar' into the same directory as 'selenium-server-standalone-2.44.0.jar' and then either double-click 'Wisard.jar' or start from the command line with:
 
     java -jar Wisard.jar
@@ -29,3 +31,5 @@ wisard can set and verify input elements, verify and click links and anchors, an
 
 By correctly setting the 'driver' settings on the 'Settings' tab, wisard can also record scripts in 'Chrome' and 'Internet Explorer' - download the correct drivers from http://docs.seleniumhq.org/download/
 
+
+Screenshots and more can be found here : http://testingsteve.github.io/wisard
