@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Wisard : Web Internal Structure Action RecorDer - a webdriver based tool for creating Selenium tests">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Wisard</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/testingsteve/wisard">View on GitHub</a>
+
+          <h1 id="project_title">Wisard</h1>
+          <h2 id="project_tagline">Web Internal Structure Action RecorDer - a webdriver based tool for creating Selenium tests</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/testingsteve/wisard/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/testingsteve/wisard/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="wisard" class="anchor" href="#wisard"><span class="octicon octicon-link"></span></a>Wisard</h1>
+
+<h2>
+<a name="web-internal-structure-action-recorder---a-webdriver-based-tool-for-creating-selenium-tests" class="anchor" href="#web-internal-structure-action-recorder---a-webdriver-based-tool-for-creating-selenium-tests"><span class="octicon octicon-link"></span></a>Web Internal Structure Action RecorDer - a webdriver based tool for creating Selenium tests</h2>
+
+<h3>
+<a name="running-wisard" class="anchor" href="#running-wisard"><span class="octicon octicon-link"></span></a>Running wisard</h3>
+
+<p>Copy <code>Wisard.jar</code> into the same directory as <code>selenium-server-standalone-2.44.0.jar</code> and then either double-click <code>Wisard.jar</code> or start from the command line with <code>java -jar Wisard.jar</code>
+Then enter a web URL and click 'Inspect'</p>
+
+<p><img src="https://raw.githubusercontent.com/testingsteve/pagescontent/master/wisard/inspect%20page.png" alt=""></p>
+
+<p>The page should load and the 'Elements' tab will show a list of web elements. Clicking on individual elements will highlight them in the browser</p>
+
+<p><img src="https://raw.githubusercontent.com/testingsteve/pagescontent/master/wisard/element%20highlighting.png" alt=""></p>
+
+<p>To interact with an element, right-click on it and select 'click' - in this example you can then enter some data into a text field</p>
+
+<p><img src="https://raw.githubusercontent.com/testingsteve/pagescontent/master/wisard/data%20entry.png" alt=""></p>
+
+<p>Clicking 'Refresh' rescans the page and now shows the text field is set to the entered data</p>
+
+<p><img src="https://raw.githubusercontent.com/testingsteve/pagescontent/master/wisard/data%20set.png" alt=""></p>
+
+<p>This generates java statements that can be 'played back'</p>
+
+<pre><code>element = driver.findElement(By.name("q"));
+element.clear();
+element.sendKeys("webdriver");
+</code></pre>
+
+<p>If a webpage opens multiple browsers, they can be switched between by selecting the page you wish to use</p>
+
+<p><img src="https://raw.githubusercontent.com/testingsteve/pagescontent/master/wisard/multiple%20pages.png" alt=""></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Wisard maintained by <a href="https://github.com/testingsteve">testingsteve</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
