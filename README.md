@@ -14,7 +14,7 @@ Running wisard
 
 Copy 'Wisard.jar' into the same directory as 'selenium-server-standalone-2.44.0.jar' and then either double-click 'Wisard.jar' or start from the command line with:
 
-    java -jar Wisard.jar'
+    java -jar Wisard.jar
     
 
 Then enter a web URL and click 'Inspect'
