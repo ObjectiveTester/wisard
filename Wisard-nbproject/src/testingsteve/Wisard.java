@@ -58,7 +58,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
 
         //create the popum menu for the element table
         popup = new JPopupMenu();
-        MouseListener popupListener = new EventListener(popup, elementsTable, bd);
+        MouseListener popupListener = new EventListener(popup, tableElements, bd);
 
         JMenuItem menuItem = new JMenuItem(Const.CLICK);
         menuItem.addActionListener((ActionListener) popupListener);
@@ -75,9 +75,9 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         menuItem = new JMenuItem(Const.IDENTIFY);
         menuItem.addActionListener((ActionListener) popupListener);
         popup.add(menuItem);
-        elementsTable.addMouseListener(popupListener);
+        tableElements.addMouseListener(popupListener);
         //hide the webElements
-        elementsTable.removeColumn(elementsTable.getColumn("webElement"));
+        tableElements.removeColumn(tableElements.getColumn("webElement"));
 
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -100,7 +100,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         pathCR.setText(prefs.get("driverCR", ""));
         pathIE.setText(prefs.get("driverIE", ""));
         defaultURL.setText(prefs.get("defaultURL", ""));
-        urlTextField.setText(prefs.get("defaultURL", ""));
+        currentUrl.setText(prefs.get("defaultURL", ""));
         if (prefs.get("browser", "").contentEquals("FF")) {
             buttonFF.setSelected(true);
         }
@@ -114,7 +114,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
             checkBoxId.setSelected(true);
         } else {
             //hide id column
-            elementsTable.removeColumn(elementsTable.getColumn("id"));
+            tableElements.removeColumn(tableElements.getColumn("id"));
         }
         if (prefs.getBoolean("showInvis", false)) {
             checkBoxInvis.setSelected(true);
@@ -131,425 +131,487 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel3 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        elementsTable = new javax.swing.JTable();
-        elementsTable.getTableHeader().setReorderingAllowed(false);
-        jToolBar1 = new javax.swing.JToolBar();
-        urlLabel = new javax.swing.JLabel();
-        urlTextField = new javax.swing.JTextField();
-        inspectButton = new javax.swing.JToggleButton();
-        refreshButton = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        codeTextArea = new javax.swing.JTextArea();
-        jPanel1 = new javax.swing.JPanel();
-        driverLabel = new javax.swing.JLabel();
-        builtinLabel = new javax.swing.JLabel();
+        buttonsBrowser = new javax.swing.ButtonGroup();
+        dialogAbout = new javax.swing.JDialog();
+        panelAbout = new javax.swing.JPanel();
+        labelName = new javax.swing.JLabel();
+        labelDesc = new javax.swing.JLabel();
+        labelCopyright = new javax.swing.JLabel();
+        labelLink = new javax.swing.JLabel();
+        buttonCool = new javax.swing.JButton();
+        dialogSettings = new javax.swing.JDialog();
+        panelSettings = new javax.swing.JPanel();
+        labelDriver = new javax.swing.JLabel();
+        labelBuiltin = new javax.swing.JLabel();
         buttonFF = new javax.swing.JRadioButton();
         buttonCR = new javax.swing.JRadioButton();
         buttonIE = new javax.swing.JRadioButton();
         pathCR = new javax.swing.JTextField();
         pathIE = new javax.swing.JTextField();
-        saveButton = new javax.swing.JButton();
+        buttonSave = new javax.swing.JButton();
         checkBoxId = new javax.swing.JCheckBox();
         checkBoxInvis = new javax.swing.JCheckBox();
-        dispoptsLabel = new javax.swing.JLabel();
-        defurlLabel = new javax.swing.JLabel();
+        labelDispopts = new javax.swing.JLabel();
+        labelDefurl = new javax.swing.JLabel();
         defaultURL = new javax.swing.JTextField();
-        jPanel2 = new javax.swing.JPanel();
-        nameLabel = new javax.swing.JLabel();
-        descLabel = new javax.swing.JLabel();
-        copyrightLabel = new javax.swing.JLabel();
-        linkLabel = new javax.swing.JLabel();
+        buttonCancel = new javax.swing.JButton();
+        tabPane = new javax.swing.JTabbedPane();
+        panelElements = new javax.swing.JPanel();
+        paneElements = new javax.swing.JScrollPane();
+        tableElements = new javax.swing.JTable();
+        tableElements.getTableHeader().setReorderingAllowed(false);
+        jToolBar1 = new javax.swing.JToolBar();
+        labelUrl = new javax.swing.JLabel();
+        currentUrl = new javax.swing.JTextField();
+        buttonInspect = new javax.swing.JToggleButton();
+        buttonRefresh = new javax.swing.JButton();
+        panelCode = new javax.swing.JScrollPane();
+        code = new javax.swing.JTextArea();
+        menuBar = new javax.swing.JMenuBar();
+        menuFile = new javax.swing.JMenu();
+        menuExit = new javax.swing.JMenuItem();
+        menuEdit = new javax.swing.JMenu();
+        menuSettings = new javax.swing.JMenuItem();
+        menuHelp = new javax.swing.JMenu();
+        menuAbout = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("Wisard");
-        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setIconImage(icon.getImage());
+        dialogAbout.setTitle("About");
+        dialogAbout.setIconImage(icon.getImage());
+        dialogAbout.setMinimumSize(new java.awt.Dimension(400, 400));
+        dialogAbout.setModal(true);
 
-        jTabbedPane1.setMinimumSize(new java.awt.Dimension(300, 300));
-        jTabbedPane1.setPreferredSize(new java.awt.Dimension(300, 300));
+        panelAbout.setLayout(new java.awt.GridBagLayout());
 
-        jPanel3.setPreferredSize(new java.awt.Dimension(300, 300));
-        jPanel3.setLayout(new java.awt.BorderLayout());
+        labelName.setFont(new java.awt.Font("Tahoma", 0, 72)); // NOI18N
+        labelName.setText("Wisard");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        panelAbout.add(labelName, gridBagConstraints);
 
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(300, 300));
+        labelDesc.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        labelDesc.setText("Web Internal Structure Action RecorDer");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        panelAbout.add(labelDesc, gridBagConstraints);
 
-        elementsTable.setModel(jTable1Model);
-        elementsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane1.setViewportView(elementsTable);
-        elementsTable.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        labelCopyright.setText("© Steve Mellor 2014-2015");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        panelAbout.add(labelCopyright, gridBagConstraints);
 
-        jPanel3.add(jScrollPane1, java.awt.BorderLayout.CENTER);
-
-        jToolBar1.setFloatable(false);
-        jToolBar1.setRollover(true);
-
-        urlLabel.setText("URL");
-        jToolBar1.add(urlLabel);
-
-        urlTextField.setColumns(15);
-        urlTextField.setText("URL");
-        urlTextField.setToolTipText("Website URL");
-        urlTextField.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        urlTextField.setMinimumSize(new java.awt.Dimension(6, 15));
-        urlTextField.setPreferredSize(new java.awt.Dimension(12, 20));
-        urlTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                urlTextFieldActionPerformed(evt);
+        labelLink.setText("<html> <a href=\"https://github.com/testingsteve/wisard\">Wisard on github</a></html>");
+        labelLink.setToolTipText("");
+        labelLink.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                labelLinkMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                labelLinkMouseEntered(evt);
             }
         });
-        jToolBar1.add(urlTextField);
-        urlTextField.getAccessibleContext().setAccessibleName("URL");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        panelAbout.add(labelLink, gridBagConstraints);
 
-        inspectButton.setText("Inspect");
-        inspectButton.setToolTipText("Open the URL");
-        inspectButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        inspectButton.setFocusable(false);
-        inspectButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        inspectButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        inspectButton.addActionListener(new java.awt.event.ActionListener() {
+        buttonCool.setText("Cool");
+        buttonCool.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                inspectButtonActionPerformed(evt);
+                buttonCoolActionPerformed(evt);
             }
         });
-        jToolBar1.add(inspectButton);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.insets = new java.awt.Insets(14, 0, 0, 0);
+        panelAbout.add(buttonCool, gridBagConstraints);
 
-        refreshButton.setText("Refresh");
-        refreshButton.setToolTipText("Refresh the page elements list");
-        refreshButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        refreshButton.setFocusable(false);
-        refreshButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        refreshButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        refreshButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                refreshButtonActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(refreshButton);
+        javax.swing.GroupLayout dialogAboutLayout = new javax.swing.GroupLayout(dialogAbout.getContentPane());
+        dialogAbout.getContentPane().setLayout(dialogAboutLayout);
+        dialogAboutLayout.setHorizontalGroup(
+            dialogAboutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dialogAboutLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(panelAbout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        dialogAboutLayout.setVerticalGroup(
+            dialogAboutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dialogAboutLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(panelAbout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
 
-        jPanel3.add(jToolBar1, java.awt.BorderLayout.PAGE_START);
+        dialogSettings.setTitle("Settings");
+        dialogSettings.setIconImage(icon.getImage());
+        dialogSettings.setMinimumSize(new java.awt.Dimension(500, 400));
+        dialogSettings.setModal(true);
 
-        jTabbedPane1.addTab("Elements", jPanel3);
+        panelSettings.setLayout(new java.awt.GridBagLayout());
 
-        codeTextArea.setEditable(false);
-        codeTextArea.setColumns(20);
-        codeTextArea.setRows(5);
-        codeTextArea.setTabSize(4);
-        jScrollPane2.setViewportView(codeTextArea);
-
-        jTabbedPane1.addTab("Generated Code", jScrollPane2);
-
-        jPanel1.setLayout(new java.awt.GridBagLayout());
-
-        driverLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        driverLabel.setText("Target Browser and driver");
+        labelDriver.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        labelDriver.setText("Target Browser and driver");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 20);
-        jPanel1.add(driverLabel, gridBagConstraints);
+        panelSettings.add(labelDriver, gridBagConstraints);
 
-        builtinLabel.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
-        builtinLabel.setText("built in");
+        labelBuiltin.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        labelBuiltin.setText("built in");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 8;
-        jPanel1.add(builtinLabel, gridBagConstraints);
+        panelSettings.add(labelBuiltin, gridBagConstraints);
 
-        buttonGroup1.add(buttonFF);
+        buttonsBrowser.add(buttonFF);
         buttonFF.setText("Firefox");
-        buttonFF.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonFFActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        jPanel1.add(buttonFF, gridBagConstraints);
+        panelSettings.add(buttonFF, gridBagConstraints);
 
-        buttonGroup1.add(buttonCR);
+        buttonsBrowser.add(buttonCR);
         buttonCR.setText("Chrome");
-        buttonCR.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonCRActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 10;
         gridBagConstraints.gridheight = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        jPanel1.add(buttonCR, gridBagConstraints);
+        panelSettings.add(buttonCR, gridBagConstraints);
 
-        buttonGroup1.add(buttonIE);
+        buttonsBrowser.add(buttonIE);
         buttonIE.setText("Internet Explorer");
         buttonIE.setToolTipText("Internet Explorer");
-        buttonIE.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonIEActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 12;
         gridBagConstraints.gridheight = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        jPanel1.add(buttonIE, gridBagConstraints);
+        panelSettings.add(buttonIE, gridBagConstraints);
         buttonIE.getAccessibleContext().setAccessibleDescription("IE");
 
         pathCR.setText("pathCR");
         pathCR.setToolTipText("Path to Chrome driver");
-        pathCR.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pathCRActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 10;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 100;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel1.add(pathCR, gridBagConstraints);
+        panelSettings.add(pathCR, gridBagConstraints);
         pathCR.getAccessibleContext().setAccessibleName("Crome driver");
 
         pathIE.setText("pathIE");
         pathIE.setToolTipText("Path to IE driver");
-        pathIE.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pathIEActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 12;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 100;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel1.add(pathIE, gridBagConstraints);
+        panelSettings.add(pathIE, gridBagConstraints);
         pathIE.getAccessibleContext().setAccessibleName("IE driver");
 
-        saveButton.setText("Save");
-        saveButton.addActionListener(new java.awt.event.ActionListener() {
+        buttonSave.setText("Save");
+        buttonSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveButtonActionPerformed(evt);
+                buttonSaveActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 15;
+        gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
+        panelSettings.add(buttonSave, gridBagConstraints);
+
+        checkBoxId.setText("Show Element 'id'");
+        checkBoxId.setToolTipText("Show Element 'id'");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        panelSettings.add(checkBoxId, gridBagConstraints);
+        checkBoxId.getAccessibleContext().setAccessibleDescription("Show id");
+
+        checkBoxInvis.setText("List invisible Elements");
+        checkBoxInvis.setToolTipText("List invisible Elements");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        panelSettings.add(checkBoxInvis, gridBagConstraints);
+        checkBoxInvis.getAccessibleContext().setAccessibleDescription("List Invisible");
+
+        labelDispopts.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        labelDispopts.setText("Display Options");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
+        panelSettings.add(labelDispopts, gridBagConstraints);
+
+        labelDefurl.setText("Default URL");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        panelSettings.add(labelDefurl, gridBagConstraints);
+
+        defaultURL.setText("defaultURL");
+        defaultURL.setToolTipText("Default URL");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 100;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        panelSettings.add(defaultURL, gridBagConstraints);
+        defaultURL.getAccessibleContext().setAccessibleName("Default URL");
+
+        buttonCancel.setText("Cancel");
+        buttonCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonCancelActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 15;
         gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
-        jPanel1.add(saveButton, gridBagConstraints);
+        panelSettings.add(buttonCancel, gridBagConstraints);
 
-        checkBoxId.setText("Show Element 'id'");
-        checkBoxId.setToolTipText("Show Element 'id'");
-        checkBoxId.addActionListener(new java.awt.event.ActionListener() {
+        javax.swing.GroupLayout dialogSettingsLayout = new javax.swing.GroupLayout(dialogSettings.getContentPane());
+        dialogSettings.getContentPane().setLayout(dialogSettingsLayout);
+        dialogSettingsLayout.setHorizontalGroup(
+            dialogSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 495, Short.MAX_VALUE)
+            .addGroup(dialogSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(dialogSettingsLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(panelSettings, javax.swing.GroupLayout.PREFERRED_SIZE, 495, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+        dialogSettingsLayout.setVerticalGroup(
+            dialogSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 351, Short.MAX_VALUE)
+            .addGroup(dialogSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(dialogSettingsLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(panelSettings, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setTitle("Wisard");
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setIconImage(icon.getImage());
+
+        tabPane.setMinimumSize(new java.awt.Dimension(300, 300));
+        tabPane.setPreferredSize(new java.awt.Dimension(300, 300));
+
+        panelElements.setPreferredSize(new java.awt.Dimension(300, 300));
+        panelElements.setLayout(new java.awt.BorderLayout());
+
+        paneElements.setPreferredSize(new java.awt.Dimension(300, 300));
+
+        tableElements.setModel(jTable1Model);
+        tableElements.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        paneElements.setViewportView(tableElements);
+        tableElements.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+
+        panelElements.add(paneElements, java.awt.BorderLayout.CENTER);
+
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+
+        labelUrl.setText("URL");
+        jToolBar1.add(labelUrl);
+
+        currentUrl.setColumns(15);
+        currentUrl.setText("URL");
+        currentUrl.setToolTipText("Website URL");
+        currentUrl.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        currentUrl.setMinimumSize(new java.awt.Dimension(6, 15));
+        currentUrl.setPreferredSize(new java.awt.Dimension(12, 20));
+        currentUrl.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                checkBoxIdActionPerformed(evt);
+                currentUrlActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        jPanel1.add(checkBoxId, gridBagConstraints);
-        checkBoxId.getAccessibleContext().setAccessibleDescription("Show id");
+        jToolBar1.add(currentUrl);
+        currentUrl.getAccessibleContext().setAccessibleName("URL");
 
-        checkBoxInvis.setText("List invisible Elements");
-        checkBoxInvis.setToolTipText("List invisible Elements");
-        checkBoxInvis.addActionListener(new java.awt.event.ActionListener() {
+        buttonInspect.setText("Inspect");
+        buttonInspect.setToolTipText("Open the URL");
+        buttonInspect.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        buttonInspect.setFocusable(false);
+        buttonInspect.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        buttonInspect.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        buttonInspect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                checkBoxInvisActionPerformed(evt);
+                buttonInspectActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        jPanel1.add(checkBoxInvis, gridBagConstraints);
-        checkBoxInvis.getAccessibleContext().setAccessibleDescription("List Invisible");
+        jToolBar1.add(buttonInspect);
 
-        dispoptsLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        dispoptsLabel.setText("Display Options");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
-        jPanel1.add(dispoptsLabel, gridBagConstraints);
-
-        defurlLabel.setText("Default URL");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        jPanel1.add(defurlLabel, gridBagConstraints);
-
-        defaultURL.setText("defaultURL");
-        defaultURL.setToolTipText("Default URL");
-        defaultURL.addActionListener(new java.awt.event.ActionListener() {
+        buttonRefresh.setText("Refresh");
+        buttonRefresh.setToolTipText("Refresh the page elements list");
+        buttonRefresh.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        buttonRefresh.setFocusable(false);
+        buttonRefresh.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        buttonRefresh.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        buttonRefresh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                defaultURLActionPerformed(evt);
+                buttonRefreshActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 100;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel1.add(defaultURL, gridBagConstraints);
-        defaultURL.getAccessibleContext().setAccessibleName("Default URL");
+        jToolBar1.add(buttonRefresh);
 
-        jTabbedPane1.addTab("Settings", jPanel1);
+        panelElements.add(jToolBar1, java.awt.BorderLayout.PAGE_START);
 
-        jPanel2.setLayout(new java.awt.GridBagLayout());
+        tabPane.addTab("Elements", panelElements);
 
-        nameLabel.setFont(new java.awt.Font("Tahoma", 0, 72)); // NOI18N
-        nameLabel.setText("Wisard");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        jPanel2.add(nameLabel, gridBagConstraints);
+        code.setEditable(false);
+        code.setColumns(20);
+        code.setRows(5);
+        code.setTabSize(4);
+        panelCode.setViewportView(code);
 
-        descLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        descLabel.setText("Web Internal Structure Action RecorDer");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel2.add(descLabel, gridBagConstraints);
+        tabPane.addTab("Generated Code", panelCode);
 
-        copyrightLabel.setText("© Steve Mellor 2014");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        jPanel2.add(copyrightLabel, gridBagConstraints);
+        menuFile.setText("File");
 
-        linkLabel.setText("<html> <a href=\"https://github.com/testingsteve/wisard\">Wisard on github</a></html>");
-        linkLabel.setToolTipText("");
-        linkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                linkLabelMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                linkLabelMouseEntered(evt);
+        menuExit.setText("Exit");
+        menuExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuExitActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        jPanel2.add(linkLabel, gridBagConstraints);
+        menuFile.add(menuExit);
 
-        jTabbedPane1.addTab("About", jPanel2);
+        menuBar.add(menuFile);
+
+        menuEdit.setText("Edit");
+
+        menuSettings.setText("Settings");
+        menuSettings.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuSettingsActionPerformed(evt);
+            }
+        });
+        menuEdit.add(menuSettings);
+
+        menuBar.add(menuEdit);
+
+        menuHelp.setText("Help");
+
+        menuAbout.setText("About");
+        menuAbout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuAboutActionPerformed(evt);
+            }
+        });
+        menuHelp.add(menuAbout);
+
+        menuBar.add(menuHelp);
+
+        setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+            .addComponent(tabPane, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
+                .addComponent(tabPane, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void urlTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_urlTextFieldActionPerformed
-        inspectButton.doClick();
-    }//GEN-LAST:event_urlTextFieldActionPerformed
+    private void currentUrlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currentUrlActionPerformed
+        buttonInspect.doClick();
+    }//GEN-LAST:event_currentUrlActionPerformed
 
-    private void buttonFFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonFFActionPerformed
-        prefs.put("browser", "FF");
-    }//GEN-LAST:event_buttonFFActionPerformed
+    private void buttonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSaveActionPerformed
 
-    private void buttonCRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCRActionPerformed
-        prefs.put("browser", "CR");
-    }//GEN-LAST:event_buttonCRActionPerformed
+        //update UI
+        currentUrl.setText(defaultURL.getText());
 
-    private void buttonIEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonIEActionPerformed
-        prefs.put("browser", "IE");
-    }//GEN-LAST:event_buttonIEActionPerformed
-
-    private void pathCRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pathCRActionPerformed
-        prefs.put("driverCR", pathCR.getText());
-    }//GEN-LAST:event_pathCRActionPerformed
-
-    private void pathIEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pathIEActionPerformed
-        prefs.put("driverIE", pathIE.getText());
-    }//GEN-LAST:event_pathIEActionPerformed
-
-    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        prefs.put("driverCR", pathCR.getText());
-        prefs.put("driverIE", pathIE.getText());
-        prefs.put("defaultURL", defaultURL.getText());
-        urlTextField.setText(defaultURL.getText());
-    }//GEN-LAST:event_saveButtonActionPerformed
-
-    private void checkBoxIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxIdActionPerformed
-        if (prefs.getBoolean("showId", false)) {
-            prefs.putBoolean("showId", false);
-            //hide id column
-            elementsTable.removeColumn(elementsTable.getColumn("id"));
-
-        } else {
-            prefs.putBoolean("showId", true);
+        if (!prefs.getBoolean("showId", false) && checkBoxId.isSelected()) {
             //reset table to show id
             jTable1Model.fireTableStructureChanged();
             //re-hide webElements
-            elementsTable.removeColumn(elementsTable.getColumn("webElement"));
+            tableElements.removeColumn(tableElements.getColumn("webElement"));
         }
-    }//GEN-LAST:event_checkBoxIdActionPerformed
-
-    private void checkBoxInvisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxInvisActionPerformed
-        if (prefs.getBoolean("showInvis", false)) {
-            prefs.putBoolean("showInvis", false);
-        } else {
-            prefs.putBoolean("showInvis", true);
+        if (prefs.getBoolean("showId", false) && !checkBoxId.isSelected()) {
+            //hide id column
+            tableElements.removeColumn(tableElements.getColumn("id"));
         }
-    }//GEN-LAST:event_checkBoxInvisActionPerformed
+        
 
-    private void defaultURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_defaultURLActionPerformed
+
+
+        //save new settings
         prefs.put("defaultURL", defaultURL.getText());
-        urlTextField.setText(defaultURL.getText());
-    }//GEN-LAST:event_defaultURLActionPerformed
+        prefs.putBoolean("showId", checkBoxId.isSelected());
+        prefs.putBoolean("showInvis", checkBoxInvis.isSelected());
 
-    private void inspectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inspectButtonActionPerformed
+        if (buttonFF.isSelected()) {
+            prefs.put("browser", "FF");
+        }
+        if (buttonIE.isSelected()) {
+            prefs.put("browser", "IE");
+        }
+        if (buttonCR.isSelected()) {
+            prefs.put("browser", "CR");
+        }
+
+        prefs.put("driverCR", pathCR.getText());
+        prefs.put("driverIE", pathIE.getText());
+
+        dialogSettings.setVisible(false);
+    }//GEN-LAST:event_buttonSaveActionPerformed
+
+    private void buttonInspectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonInspectActionPerformed
         // TODO add your handling code here:
         //System.out.println(evt.getActionCommand());
-        if (inspectButton.isSelected()) {
-            urlTextField.setEnabled(false);
+        if (buttonInspect.isSelected()) {
+            currentUrl.setEnabled(false);
             Boolean success = false;
             if (prefs.get("browser", "").contentEquals("FF")) {
-                success = bd.initFF(urlTextField.getText());
+                success = bd.initFF(currentUrl.getText());
             }
             if (prefs.get("browser", "").contentEquals("CR")) {
-                success = bd.initCR(urlTextField.getText(), prefs.get("driverCR", ""));
+                success = bd.initCR(currentUrl.getText(), prefs.get("driverCR", ""));
             }
             if (prefs.get("browser", "").contentEquals("IE")) {
-                success = bd.initIE(urlTextField.getText(), prefs.get("driverIE", ""));
+                success = bd.initIE(currentUrl.getText(), prefs.get("driverIE", ""));
             }
 
             if (success) {
                 Thread t = new Thread(bd, "Page Examiner");
                 t.start();
             } else {
-                urlTextField.setEnabled(true);
-                inspectButton.doClick();
+                currentUrl.setEnabled(true);
+                buttonInspect.doClick();
                 bd.close();
             }
 
         } else {
-            urlTextField.setEnabled(true);
+            currentUrl.setEnabled(true);
             //tidy up
             popup.setVisible(false);
             for (int i = jTable1Model.getRowCount(); i > 0; i--) {
@@ -557,13 +619,13 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
             }
             bd.close();
         }
-    }//GEN-LAST:event_inspectButtonActionPerformed
+    }//GEN-LAST:event_buttonInspectActionPerformed
 
-    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+    private void buttonRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshActionPerformed
         rescan();
-    }//GEN-LAST:event_refreshButtonActionPerformed
+    }//GEN-LAST:event_buttonRefreshActionPerformed
 
-    private void linkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_linkLabelMouseClicked
+    private void labelLinkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelLinkMouseClicked
         // TODO add your handling code here:
         if (Desktop.isDesktopSupported()) {
             try {
@@ -574,12 +636,55 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         } else {
             this.errorMessage("Unable to open browser, please visit:\n https://github.com/testingsteve/wisard");
         }
-    }//GEN-LAST:event_linkLabelMouseClicked
+    }//GEN-LAST:event_labelLinkMouseClicked
 
-    private void linkLabelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_linkLabelMouseEntered
+    private void labelLinkMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelLinkMouseEntered
         // TODO add your handling code here:
-        linkLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-    }//GEN-LAST:event_linkLabelMouseEntered
+        labelLink.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_labelLinkMouseEntered
+
+    private void menuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuExitActionPerformed
+        // TODO add your handling code here:
+        dispose();
+    }//GEN-LAST:event_menuExitActionPerformed
+
+    private void menuSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSettingsActionPerformed
+        // TODO add your handling code here:
+        dialogSettings.setVisible(true);
+    }//GEN-LAST:event_menuSettingsActionPerformed
+
+    private void menuAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuAboutActionPerformed
+        // TODO add your handling code here:
+        dialogAbout.setVisible(true);
+    }//GEN-LAST:event_menuAboutActionPerformed
+
+    private void buttonCoolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCoolActionPerformed
+        // TODO add your handling code here:
+        dialogAbout.setVisible(false);
+    }//GEN-LAST:event_buttonCoolActionPerformed
+
+    private void buttonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCancelActionPerformed
+        // TODO add your handling code here:
+        //restore original settings
+        defaultURL.setText((prefs.get("defaultURL", "")));
+        checkBoxId.setSelected(prefs.getBoolean("showId", true));
+        checkBoxInvis.setSelected(prefs.getBoolean("showInvis", true));
+
+        if (prefs.get("browser", "").contentEquals("FF")) {
+            buttonFF.setSelected(true);
+        }
+        if (prefs.get("browser", "").contentEquals("CR")) {
+            buttonCR.setSelected(true);
+        }
+        if (prefs.get("browser", "").contentEquals("IE")) {
+            buttonIE.setSelected(true);
+        }
+
+        pathCR.setText(prefs.get("driverCR", ""));
+        pathIE.setText(prefs.get("driverIE", ""));
+
+        dialogSettings.setVisible(false);
+    }//GEN-LAST:event_buttonCancelActionPerformed
 
     /**
      * @param args the command line arguments
@@ -609,37 +714,48 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel builtinLabel;
     private javax.swing.JRadioButton buttonCR;
+    private javax.swing.JButton buttonCancel;
+    private javax.swing.JButton buttonCool;
     private javax.swing.JRadioButton buttonFF;
-    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JRadioButton buttonIE;
+    private javax.swing.JToggleButton buttonInspect;
+    private javax.swing.JButton buttonRefresh;
+    private javax.swing.JButton buttonSave;
+    private javax.swing.ButtonGroup buttonsBrowser;
     private javax.swing.JCheckBox checkBoxId;
     private javax.swing.JCheckBox checkBoxInvis;
-    private javax.swing.JTextArea codeTextArea;
-    private javax.swing.JLabel copyrightLabel;
+    private javax.swing.JTextArea code;
+    private javax.swing.JTextField currentUrl;
     private javax.swing.JTextField defaultURL;
-    private javax.swing.JLabel defurlLabel;
-    private javax.swing.JLabel descLabel;
-    private javax.swing.JLabel dispoptsLabel;
-    private javax.swing.JLabel driverLabel;
-    private javax.swing.JTable elementsTable;
-    private javax.swing.JToggleButton inspectButton;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JDialog dialogAbout;
+    private javax.swing.JDialog dialogSettings;
     private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JLabel linkLabel;
-    private javax.swing.JLabel nameLabel;
+    private javax.swing.JLabel labelBuiltin;
+    private javax.swing.JLabel labelCopyright;
+    private javax.swing.JLabel labelDefurl;
+    private javax.swing.JLabel labelDesc;
+    private javax.swing.JLabel labelDispopts;
+    private javax.swing.JLabel labelDriver;
+    private javax.swing.JLabel labelLink;
+    private javax.swing.JLabel labelName;
+    private javax.swing.JLabel labelUrl;
+    private javax.swing.JMenuItem menuAbout;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenu menuEdit;
+    private javax.swing.JMenuItem menuExit;
+    private javax.swing.JMenu menuFile;
+    private javax.swing.JMenu menuHelp;
+    private javax.swing.JMenuItem menuSettings;
+    private javax.swing.JScrollPane paneElements;
+    private javax.swing.JPanel panelAbout;
+    private javax.swing.JScrollPane panelCode;
+    private javax.swing.JPanel panelElements;
+    private javax.swing.JPanel panelSettings;
     private javax.swing.JTextField pathCR;
     private javax.swing.JTextField pathIE;
-    private javax.swing.JButton refreshButton;
-    private javax.swing.JButton saveButton;
-    private javax.swing.JLabel urlLabel;
-    private javax.swing.JTextField urlTextField;
+    private javax.swing.JTabbedPane tabPane;
+    private javax.swing.JTable tableElements;
     // End of variables declaration//GEN-END:variables
 
     private void exitProcedure() {
@@ -680,13 +796,13 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
     public void abort() {
         //triggers a UI cleanup
         this.errorMessage("Unexpected error!");
-        inspectButton.doClick();
+        buttonInspect.doClick();
     }
 
     @Override
     public void addCode(String fragment) {
         //adds content to the generated code
-        codeTextArea.setText(fragment);
+        code.setText(fragment);
     }
 
     @Override
@@ -694,12 +810,12 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         //inserts content to the generated code
         int point;
         try {
-            point = codeTextArea.getLineEndOffset(codeTextArea.getLineCount() - above);
+            point = code.getLineEndOffset(code.getLineCount() - above);
         } catch (BadLocationException e) {
             point = 1;
             //it'll be messy
         }
-        codeTextArea.insert(fragment, point - 1);
+        code.insert(fragment, point - 1);
 
     }
 
