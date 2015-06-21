@@ -66,9 +66,6 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         menuItem = new JMenuItem(Const.FIND);
         menuItem.addActionListener((ActionListener) popupListener);
         popup.add(menuItem);
-        menuItem = new JMenuItem(Const.VERIFY);
-        menuItem.addActionListener((ActionListener) popupListener);
-        popup.add(menuItem);
         menuItem = new JMenuItem(Const.ASSERT);
         menuItem.addActionListener((ActionListener) popupListener);
         popup.add(menuItem);
@@ -91,6 +88,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         if (prefs.get("browser", "").contentEquals("")) {
             //System.out.println("no prefs, writing defaults");
             prefs.put("browser", "FF");
+            prefs.put("output", "junit");
             prefs.put("driverCR", "./chromedriver.exe");
             prefs.put("driverIE", "./IEDriverServer.exe");
             prefs.putBoolean("showId", false);
@@ -116,8 +114,11 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
             //hide id column
             tableElements.removeColumn(tableElements.getColumn("id"));
         }
-        if (prefs.getBoolean("showInvis", false)) {
-            checkBoxInvis.setSelected(true);
+        if (prefs.get("output", "").contentEquals("java")) {
+            buttonJava.setSelected(true);
+        }
+        if (prefs.get("output", "").contentEquals("junit")) {
+            buttonJunit.setSelected(true);
         }
 
     }
@@ -132,6 +133,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         java.awt.GridBagConstraints gridBagConstraints;
 
         buttonsBrowser = new javax.swing.ButtonGroup();
+        buttonsOutput = new javax.swing.ButtonGroup();
         dialogAbout = new javax.swing.JDialog();
         panelAbout = new javax.swing.JPanel();
         labelName = new javax.swing.JLabel();
@@ -151,10 +153,13 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         buttonSave = new javax.swing.JButton();
         checkBoxId = new javax.swing.JCheckBox();
         checkBoxInvis = new javax.swing.JCheckBox();
+        labelOutput = new javax.swing.JLabel();
         labelDispopts = new javax.swing.JLabel();
         labelDefurl = new javax.swing.JLabel();
         defaultURL = new javax.swing.JTextField();
         buttonCancel = new javax.swing.JButton();
+        buttonJunit = new javax.swing.JRadioButton();
+        buttonJava = new javax.swing.JRadioButton();
         tabPane = new javax.swing.JTabbedPane();
         panelElements = new javax.swing.JPanel();
         paneElements = new javax.swing.JScrollPane();
@@ -257,7 +262,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         labelDriver.setText("Target Browser and driver");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 20);
         panelSettings.add(labelDriver, gridBagConstraints);
@@ -266,14 +271,14 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         labelBuiltin.setText("built in");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 9;
         panelSettings.add(labelBuiltin, gridBagConstraints);
 
         buttonsBrowser.add(buttonFF);
         buttonFF.setText("Firefox");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 9;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         panelSettings.add(buttonFF, gridBagConstraints);
 
@@ -281,7 +286,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         buttonCR.setText("Chrome");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridy = 11;
         gridBagConstraints.gridheight = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         panelSettings.add(buttonCR, gridBagConstraints);
@@ -291,7 +296,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         buttonIE.setToolTipText("Internet Explorer");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 12;
+        gridBagConstraints.gridy = 13;
         gridBagConstraints.gridheight = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         panelSettings.add(buttonIE, gridBagConstraints);
@@ -301,7 +306,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         pathCR.setToolTipText("Path to Chrome driver");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridy = 11;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 100;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -312,7 +317,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         pathIE.setToolTipText("Path to IE driver");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 12;
+        gridBagConstraints.gridy = 13;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 100;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -327,7 +332,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 15;
+        gridBagConstraints.gridy = 16;
         gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
         panelSettings.add(buttonSave, gridBagConstraints);
 
@@ -348,6 +353,15 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         panelSettings.add(checkBoxInvis, gridBagConstraints);
         checkBoxInvis.getAccessibleContext().setAccessibleDescription("List Invisible");
+
+        labelOutput.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        labelOutput.setText("Generated Output");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
+        panelSettings.add(labelOutput, gridBagConstraints);
 
         labelDispopts.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         labelDispopts.setText("Display Options");
@@ -384,29 +398,39 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 15;
+        gridBagConstraints.gridy = 16;
         gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
         panelSettings.add(buttonCancel, gridBagConstraints);
+
+        buttonsOutput.add(buttonJunit);
+        buttonJunit.setText("jUnit");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        panelSettings.add(buttonJunit, gridBagConstraints);
+
+        buttonsOutput.add(buttonJava);
+        buttonJava.setText("Java");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        panelSettings.add(buttonJava, gridBagConstraints);
 
         javax.swing.GroupLayout dialogSettingsLayout = new javax.swing.GroupLayout(dialogSettings.getContentPane());
         dialogSettings.getContentPane().setLayout(dialogSettingsLayout);
         dialogSettingsLayout.setHorizontalGroup(
             dialogSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 495, Short.MAX_VALUE)
+            .addGap(0, 400, Short.MAX_VALUE)
             .addGroup(dialogSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(dialogSettingsLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(panelSettings, javax.swing.GroupLayout.PREFERRED_SIZE, 495, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(panelSettings, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
         );
         dialogSettingsLayout.setVerticalGroup(
             dialogSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 351, Short.MAX_VALUE)
+            .addGap(0, 370, Short.MAX_VALUE)
             .addGroup(dialogSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(dialogSettingsLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(panelSettings, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(panelSettings, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -560,9 +584,6 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
             //hide id column
             tableElements.removeColumn(tableElements.getColumn("id"));
         }
-        
-
-
 
         //save new settings
         prefs.put("defaultURL", defaultURL.getText());
@@ -578,6 +599,12 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         if (buttonCR.isSelected()) {
             prefs.put("browser", "CR");
         }
+        if (buttonJunit.isSelected()) {
+            prefs.put("output", "junit");
+        }
+        if (buttonJava.isSelected()) {
+            prefs.put("output", "java");
+        }
 
         prefs.put("driverCR", pathCR.getText());
         prefs.put("driverIE", pathIE.getText());
@@ -591,6 +618,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         if (buttonInspect.isSelected()) {
             currentUrl.setEnabled(false);
             Boolean success = false;
+            bd.initWriter(prefs.get("output", "junit"));
             if (prefs.get("browser", "").contentEquals("FF")) {
                 success = bd.initFF(currentUrl.getText());
             }
@@ -720,9 +748,12 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
     private javax.swing.JRadioButton buttonFF;
     private javax.swing.JRadioButton buttonIE;
     private javax.swing.JToggleButton buttonInspect;
+    private javax.swing.JRadioButton buttonJava;
+    private javax.swing.JRadioButton buttonJunit;
     private javax.swing.JButton buttonRefresh;
     private javax.swing.JButton buttonSave;
     private javax.swing.ButtonGroup buttonsBrowser;
+    private javax.swing.ButtonGroup buttonsOutput;
     private javax.swing.JCheckBox checkBoxId;
     private javax.swing.JCheckBox checkBoxInvis;
     private javax.swing.JTextArea code;
@@ -739,6 +770,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
     private javax.swing.JLabel labelDriver;
     private javax.swing.JLabel labelLink;
     private javax.swing.JLabel labelName;
+    private javax.swing.JLabel labelOutput;
     private javax.swing.JLabel labelUrl;
     private javax.swing.JMenuItem menuAbout;
     private javax.swing.JMenuBar menuBar;

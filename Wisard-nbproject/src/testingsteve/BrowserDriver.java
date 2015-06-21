@@ -30,12 +30,19 @@ class BrowserDriver implements Runnable {
     WebDriver driver;
     JavascriptExecutor js;
     UserInterface ui;
-    ScriptWriter sw;
+    DefaultWriter writer;
     boolean safe = false;
 
     BrowserDriver(UserInterface ui) {
         this.ui = ui;
-        sw = new ScriptWriter(ui);
+    }
+
+    void initWriter(String selected) {
+        if (selected.contains("junit")) {
+            writer = new TestWriter(ui);
+        } else {
+            writer = new ScriptWriter(ui);
+        }
     }
 
     boolean initFF(String url) {
@@ -43,7 +50,7 @@ class BrowserDriver implements Runnable {
         try {
             driver = new FirefoxDriver();
             js = (JavascriptExecutor) driver;
-            sw.writeHeader(url, "FF");
+            writer.writeHeader(url, "FF");
             driver.get(url);
         } catch (WebDriverException e) {
             ui.errorMessage("Invalid URL?");
@@ -58,7 +65,7 @@ class BrowserDriver implements Runnable {
             System.setProperty("webdriver.chrome.driver", path);
             driver = new ChromeDriver();
             js = (JavascriptExecutor) driver;
-            sw.writeHeader(url, "CR");
+            writer.writeHeader(url, "CR");
             driver.get(url);
         } catch (IllegalStateException ise) {
             ui.errorMessage("Path to Chrome driver is invalid, check settings.");
@@ -76,7 +83,7 @@ class BrowserDriver implements Runnable {
             System.setProperty("webdriver.ie.driver", path);
             driver = new InternetExplorerDriver();
             js = (JavascriptExecutor) driver;
-            sw.writeHeader(url, "IE");
+            writer.writeHeader(url, "IE");
             driver.get(url);
         } catch (IllegalStateException ise) {
             ui.errorMessage("Path to IE driver is invalid, check settings.");
@@ -222,7 +229,7 @@ class BrowserDriver implements Runnable {
                 //System.out.println("f:" + frame + " from " + fm.group(1));
                 if (frame.contains("/")) {
                     //nested locators dont work
-                    //change this so we try to find it as a test first?
+                    //change this so we try to elementFind it as a test first?
                     frame = "";
                 }
                 if (!frame.isEmpty()) {
@@ -279,14 +286,14 @@ class BrowserDriver implements Runnable {
                 WebElement nextFrame = waitfor(By.id(frame.replace(Const.ID, "")));
                 //System.out.println("by.id " + frame.replace(Const.ID, ""));
                 if (write) {
-                    sw.writeSwitchById(frame.replace(Const.ID, ""));
+                    writer.writeSwitchById(frame.replace(Const.ID, ""));
                 }
                 driver.switchTo().frame(nextFrame);
             } else {
                 WebElement nextFrame = waitfor(By.name(frame));
                 //System.out.println("by.frames " + frame);
                 if (write) {
-                    sw.writeSwitchByName(frame);
+                    writer.writeSwitchByName(frame);
                 }
                 driver.switchTo().frame(nextFrame);
             }
@@ -315,10 +322,10 @@ class BrowserDriver implements Runnable {
         }
     }
 
-    String[] find(WebElement webElement, String target, String action) {
+    String[] elementFind(WebElement webElement, String target, String action) {
         target = target.replace(Const.INVISIBLE, "");
         driver.switchTo().defaultContent();
-        //see if we can find it first
+        //see if we can elementFind it first
         if (!target.contentEquals(Const.PAGE)) {
             traverse(target, false);
         }
@@ -326,7 +333,7 @@ class BrowserDriver implements Runnable {
         String method[] = elementFinder(webElement);
         driver.switchTo().defaultContent();
         if (method[0] != null) {
-            //we can find it, so write code to navigate
+            //we can elementFind it, so write code to navigate
             if (!target.contentEquals(Const.PAGE)) {
                 //navigate to the webElement
                 traverse(target, true);
@@ -334,30 +341,37 @@ class BrowserDriver implements Runnable {
 
             if (!action.equals(Const.CLICK)) {
                 //write code to get the element
-                sw.writeFindEvent(method[0], method[1]);
+                writer.writeFindEvent(method[0], method[1]);
             }
 
-            //if we're just doing a find, tidy up
+            //if we're just doing a elementFind, tidy up
             if (action.equals(Const.FIND)) {
                 if (!target.contentEquals(Const.PAGE)) {
                     //if we had to navigate here, switch back
-                    sw.writeSwitchBack();
+                    writer.writeSwitchBack();
                 }
             }
-
         } else {
-            //failed to find the webElement
+            //failed to elementFind the webElement
+
             ui.errorMessage("Unable to uniquely identify " + name);
+            writer.comment("Unable to uniquely identify " + name);
         }
         return method;
     }
 
+    void find(WebElement webElement, String target, String action) {
+        writer.writeStart();
+        elementFind(webElement, target, action);
+        writer.writeEnd();
+    }
+
     void click(WebElement webElement, String target) {
         if (!target.endsWith(Const.INVISIBLE)) {
-            String method[] = find(webElement, target, Const.CLICK);
+            writer.writeStart();
+            String method[] = elementFind(webElement, target, Const.CLICK);
             if (method[0] != null) {
-                sw.writeClickEvent(method[0], method[1]);
-
+                writer.writeClickEvent(method[0], method[1]);
                 webElement.click();
 
                 //if that caused an alert to popup, deal with it
@@ -373,7 +387,7 @@ class BrowserDriver implements Runnable {
                         } else {
                             alert.accept();
                         }
-                        sw.writeAlertClick(title, action);
+                        writer.writeAlertClick(title, action);
                         ui.rescan();
                     }
                 } catch (NoAlertPresentException na) {
@@ -382,34 +396,38 @@ class BrowserDriver implements Runnable {
 
                 if (!target.contentEquals(Const.PAGE)) {
                     //if we had to navigate here, switch back
-                    sw.writeSwitchBack();
+                    writer.writeSwitchBack();
                 }
                 driver.switchTo().defaultContent();
             }
+            writer.writeEnd();
         }
     }
 
     void input(WebElement webElement, String target) {
         String data = ui.enterValue(webElement.getAttribute("name"));
         if (data != null) {
-            String method[] = find(webElement, target, "");
+            writer.writeStart();
+            String method[] = elementFind(webElement, target, "");
             if (method[0] != null) {
-                sw.writeInputEvent(data);
+                writer.writeInputEvent(data);
                 if (!target.contentEquals(Const.PAGE)) {
                     //if we had to navigate here, switch back
-                    sw.writeSwitchBack();
+                    writer.writeSwitchBack();
                 }
                 webElement.clear();
                 webElement.sendKeys(data);
                 driver.switchTo().defaultContent();
             }
+            writer.writeEnd();
         }
     }
 
     void inputjs(WebElement webElement, String target) {
         String data = ui.enterValue(webElement.getAttribute("name"));
         if (data != null) {
-            String method[] = find(webElement, target, "click");
+            writer.writeStart();
+            String method[] = elementFind(webElement, target, "click");
             if (method[0] != null) {
 
                 //this only works if the first match is the right element
@@ -421,14 +439,15 @@ class BrowserDriver implements Runnable {
                 if (method[0].contentEquals("className")) {
                     jsInput = jsInput.replace("getElementsByName", "getElementsByClassName");
                 }
-                sw.writeInputjsEvent(jsInput.replace("\"", "\\\""));
+                writer.writeInputjsEvent(jsInput.replace("\"", "\\\""));
                 if (!target.contentEquals(Const.PAGE)) {
                     //if we had to navigate here, switch back
-                    sw.writeSwitchBack();
+                    writer.writeSwitchBack();
                 }
                 js.executeScript(jsInput);
                 driver.switchTo().defaultContent();
             }
+            writer.writeEnd();
         }
     }
 
@@ -447,24 +466,26 @@ class BrowserDriver implements Runnable {
         //make a choice
         String data = ui.enterSelection(webElement.getAttribute("name"), choices);
         if (data != null) {
-            String method[] = find(webElement, target, "");
+            writer.writeStart();
+            String method[] = elementFind(webElement, target, "");
             if (method[0] != null) {
-                sw.writeSelectEvent(data);
+                writer.writeSelectEvent(data);
                 if (!target.contentEquals(Const.PAGE)) {
                     //if we had to navigate here, switch back
-                    sw.writeSwitchBack();
+                    writer.writeSwitchBack();
                 }
                 webElement.sendKeys(data + "\n");
                 driver.switchTo().defaultContent();
+                writer.writeEnd();
             }
         }
     }
 
-    void verify(WebElement webElement, String target, String element, String expected, boolean assertion) {
+    void verify(WebElement webElement, String target, String element, String expected) {
         target = target.replace(Const.INVISIBLE, "");
-        String method[] = find(webElement, target, "");
+        writer.writeStart();
+        String method[] = elementFind(webElement, target, "");
         if (method[0] != null) {
-
             String verifymethod;
             if (element.contains("link")) {
                 verifymethod = "href";
@@ -481,18 +502,20 @@ class BrowserDriver implements Runnable {
             //System.out.println("expected:" + expected);
             //System.out.println("actual:" + webElement.getAttribute(verifymethod));
             //System.out.println("using:" + verifymethod);
-            sw.writeVerifyElement(target, expected, verifymethod, assertion);
+            writer.writeVerifyElement(expected, verifymethod);
 
             if (!target.contentEquals(Const.PAGE)) {
                 //if we had to navigate here, switch back
-                sw.writeSwitchBack();
+                writer.writeSwitchBack();
             }
-
         }
+        writer.writeEnd();
     }
 
-    void verifyPage(String expected, boolean assertion) {
-        sw.writeVerifyPage(expected, assertion);
+    void verifyPage(String expected) {
+        writer.writeStart();
+        writer.writeVerifyPage(expected);
+        writer.writeEnd();
     }
 
     void ident(WebElement webElement, String target, String element, String name, String id, String value) {
@@ -538,7 +561,9 @@ class BrowserDriver implements Runnable {
 
     void switchWin(String handle, String title) {
         try {
-            sw.writeSwitchWin(title);
+            writer.writeStart();
+            writer.writeSwitchWin(title);
+            writer.writeEnd();
             driver.switchTo().window(handle);
         } catch (TimeoutException | StaleElementReferenceException | ElementNotVisibleException e) {
             //do nothing, we're rescanning anyway
@@ -549,7 +574,7 @@ class BrowserDriver implements Runnable {
     }
 
     private String[] elementFinder(WebElement webElement) {
-        //uniquely find the webElement by the most descriptive attribute
+        //uniquely elementFind the webElement by the most descriptive attribute
         //
         //By.frames
         //By.id
