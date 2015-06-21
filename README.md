@@ -25,7 +25,7 @@ Using wisard
 ============
 Once a browser has opened and displayed your web page, all the useful elements of the page are displayed in the 'Elements' tab of the Wisard window. Wisard will try to momentarily highlight any element you click on. Right clicking an element allows you to interact with it by clicking it or verifying it's value, etc.
 
-As you set and verify element values, the 'Generated Code' tab is updated with jUnit test cases. Alternately, Java statements can be generathed to automate a web task. These can be copied and pasted into a file/your favourite IDE and then compiled and executed.
+As you set and verify element values, the 'Generated Code' tab is updated with jUnit test cases. Alternately, Java statements can be generated to automate a web task. These can be copied and pasted into a file/your favourite IDE and then compiled and executed.
 
 wisard can set and verify input elements, verify and click links and anchors, and verify image elements.
 
