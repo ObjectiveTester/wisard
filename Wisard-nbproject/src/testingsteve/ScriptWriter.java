@@ -36,6 +36,11 @@ class ScriptWriter extends DefaultWriter {
                 sysProp = "        System.setProperty(\"webdriver.ie.driver\", \"<path>\");\n";
                 driverInit = "        WebDriver driver = new InternetExplorerDriver();\n";
                 break;
+
+            case "SA":
+                driverImport = "import org.openqa.selenium.safari.SafariDriver;\n";
+                driverInit = "        driver = new SafariDriver();\n";
+                break;
         }
 
         ui.addCode("import java.util.concurrent.TimeUnit;\n"

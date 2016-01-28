@@ -7,14 +7,14 @@ Building wisard
 ===============
 Open the 'wisard' folder in NetBeans, right click on the project and select 'Properties' -> 'Libraries' and configure the path to the 'selenium-server-standalone' JAR from http://docs.seleniumhq.org/download/
 
-Then right click on the project and 'Build'. The project includes a custom 'manifest.mf' with a hardwired 'Class-Path' to the 'selenium-server-standalone' JAR - you'll have to update this as well if you use anything other than 2.46.0.
+Then right click on the project and 'Build'. The project includes a custom 'manifest.mf' with a hardwired 'Class-Path' to the 'selenium-server-standalone' JAR - you'll have to update this as well if you use anything other than 2.49.0.
 
 Running wisard
 ==============
 
 
 
-Copy 'Wisard.jar' into the same directory as 'selenium-server-standalone-2.46.0.jar' and then either double-click 'Wisard.jar' or start from the command line with:
+Copy 'Wisard.jar' into the same directory as 'selenium-server-standalone-2.49.0.jar' and then either double-click 'Wisard.jar' or start from the command line with:
 
     java -jar Wisard.jar
     

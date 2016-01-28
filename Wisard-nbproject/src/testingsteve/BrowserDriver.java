@@ -23,6 +23,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.*;
 
 class BrowserDriver implements Runnable {
@@ -88,6 +89,20 @@ class BrowserDriver implements Runnable {
         } catch (IllegalStateException ise) {
             ui.errorMessage("Path to IE driver is invalid, check settings.");
             return false;
+        } catch (WebDriverException e) {
+            ui.errorMessage("Invalid URL?");
+            return false;
+        }
+        return true;
+    }
+
+    boolean initSA(String url) {
+        //FF
+        try {
+            driver = new SafariDriver();
+            js = (JavascriptExecutor) driver;
+            writer.writeHeader(url, "SA");
+            driver.get(url);
         } catch (WebDriverException e) {
             ui.errorMessage("Invalid URL?");
             return false;
