@@ -39,7 +39,7 @@ class ScriptWriter extends DefaultWriter {
 
             case "SA":
                 driverImport = "import org.openqa.selenium.safari.SafariDriver;\n";
-                driverInit = "        driver = new SafariDriver();\n";
+                driverInit = "        WebDriver driver = new SafariDriver();\n";
                 break;
         }
 
