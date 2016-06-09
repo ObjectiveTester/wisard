@@ -591,19 +591,20 @@ class BrowserDriver implements Runnable {
     private String[] elementFinder(WebElement webElement) {
         //uniquely elementFind the webElement by the most descriptive attribute
         //
-        //By.frames
-        //By.id
         //By.linkText
+        //By.name
+        //By.id
         //By.className
-        //By.cssSelector - href tag
-        //By.cssSelector - src tag
-        //By.cssSelector - alt tag
-
+        //By.cssSelector - class
+        //By.cssSelector - value
+        //By.cssSelector - alt
+        //By.cssSelector - href
+        //By.cssSelector - src
         List<WebElement> elements;
         String selector;
         String[] result = {null, null};
 
-        //text
+        //linktext
         if (webElement.getText() != null) {
             elements = driver.findElements(By.linkText(webElement.getText()));
             if ((elements.size() == 1) && elements.contains(webElement)) {
@@ -656,9 +657,48 @@ class BrowserDriver implements Runnable {
         } catch (InvalidSelectorException | NullPointerException e) {
         }
 
+        //class
+        try {
+            selector = "[class='" + webElement.getAttribute("class") + "']";
+            elements = driver.findElements(By.cssSelector(selector));
+            if ((elements.size() == 1) && elements.contains(webElement)) {
+                //System.out.println("found cssSelector:" + selector);
+                result[0] = "cssSelector";
+                result[1] = "[class='" + elements.get(0).getAttribute("class") + "']";
+                return result;
+            }
+        } catch (InvalidSelectorException | NullPointerException e) {
+        }
+
+        //value
+        try {
+            selector = "[value='" + webElement.getAttribute("value") + "']";
+            elements = driver.findElements(By.cssSelector(selector));
+            if ((elements.size() == 1) && elements.contains(webElement)) {
+                //System.out.println("found cssSelector:" + selector);
+                result[0] = "cssSelector";
+                result[1] = "[value='" + elements.get(0).getAttribute("value") + "']";
+                return result;
+            }
+        } catch (InvalidSelectorException | NullPointerException e) {
+        }
+
+        //alt
+        try {
+            selector = "[alt='" + webElement.getAttribute("alt") + "']";
+            elements = driver.findElements(By.cssSelector(selector));
+            if ((elements.size() == 1) && elements.contains(webElement)) {
+                //System.out.println("found cssSelector:" + selector);
+                result[0] = "cssSelector";
+                result[1] = "[alt='" + elements.get(0).getAttribute("alt") + "']";
+                return result;
+            }
+        } catch (InvalidSelectorException | NullPointerException e) {
+        }
+
         String root = js.executeScript("return document.domain;").toString();
 
-        //href tag
+        //href
         try {
             selector = "[href='" + webElement.getAttribute("href") + "']";
             elements = driver.findElements(By.cssSelector(selector));
@@ -671,7 +711,7 @@ class BrowserDriver implements Runnable {
         } catch (InvalidSelectorException | NullPointerException e) {
         }
 
-        //href tag, no path
+        //href, no path
         try {
             selector = "[href='" + webElement.getAttribute("href").replaceAll("http.*" + root + "/", "") + "']";
             elements = driver.findElements(By.cssSelector(selector));
@@ -684,7 +724,7 @@ class BrowserDriver implements Runnable {
         } catch (InvalidSelectorException | NullPointerException e) {
         }
 
-        //href tag, relative path
+        //href, relative path
         try {
             selector = "[href='" + webElement.getAttribute("href").replaceAll("http.*" + root, "") + "']";
             elements = driver.findElements(By.cssSelector(selector));
@@ -697,7 +737,7 @@ class BrowserDriver implements Runnable {
         } catch (InvalidSelectorException | NullPointerException e) {
         }
 
-        //src tag
+        //src
         try {
             selector = "[src='" + webElement.getAttribute("src") + "']";
             elements = driver.findElements(By.cssSelector(selector));
@@ -710,7 +750,7 @@ class BrowserDriver implements Runnable {
         } catch (InvalidSelectorException | NullPointerException e) {
         }
 
-        //src tag, no path
+        //src, no path
         try {
             selector = "[src='" + webElement.getAttribute("src").replaceAll("http.*" + root + "/", "") + "']";
             elements = driver.findElements(By.cssSelector(selector));
@@ -723,7 +763,7 @@ class BrowserDriver implements Runnable {
         } catch (InvalidSelectorException | NullPointerException e) {
         }
 
-        //src tag, relative path
+        //src, relative path
         try {
             selector = "[src='" + webElement.getAttribute("src").replaceAll("http.*" + root, "") + "']";
             elements = driver.findElements(By.cssSelector(selector));
@@ -731,19 +771,6 @@ class BrowserDriver implements Runnable {
                 //System.out.println("found cssSelector:" + selector);
                 result[0] = "cssSelector";
                 result[1] = "[src='" + elements.get(0).getAttribute("src").replaceAll("http.*" + root, "") + "']";
-                return result;
-            }
-        } catch (InvalidSelectorException | NullPointerException e) {
-        }
-
-        //alt tag
-        try {
-            selector = "[alt='" + webElement.getAttribute("alt") + "']";
-            elements = driver.findElements(By.cssSelector(selector));
-            if ((elements.size() == 1) && elements.contains(webElement)) {
-                //System.out.println("found cssSelector:" + selector);
-                result[0] = "cssSelector";
-                result[1] = "[alt='" + elements.get(0).getAttribute("alt") + "']";
                 return result;
             }
         } catch (InvalidSelectorException | NullPointerException e) {
