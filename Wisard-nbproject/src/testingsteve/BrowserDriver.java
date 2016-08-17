@@ -596,10 +596,10 @@ class BrowserDriver implements Runnable {
         //By.id
         //By.className
         //By.cssSelector - class
+        //By.cssSelector - value
         //By.cssSelector - alt
         //By.cssSelector - href
         //By.cssSelector - src
-        //By.cssSelector - value
         List<WebElement> elements;
         String selector;
         String[] result = {null, null};
@@ -665,6 +665,19 @@ class BrowserDriver implements Runnable {
                 //System.out.println("found cssSelector:" + selector);
                 result[0] = "cssSelector";
                 result[1] = "[class='" + elements.get(0).getAttribute("class") + "']";
+                return result;
+            }
+        } catch (InvalidSelectorException | NullPointerException e) {
+        }
+
+        //value
+        try {
+            selector = "[value='" + webElement.getAttribute("value") + "']";
+            elements = driver.findElements(By.cssSelector(selector));
+            if ((elements.size() == 1) && elements.contains(webElement)) {
+                //System.out.println("found cssSelector:" + selector);
+                result[0] = "cssSelector";
+                result[1] = "[value='" + elements.get(0).getAttribute("value") + "']";
                 return result;
             }
         } catch (InvalidSelectorException | NullPointerException e) {
@@ -758,19 +771,6 @@ class BrowserDriver implements Runnable {
                 //System.out.println("found cssSelector:" + selector);
                 result[0] = "cssSelector";
                 result[1] = "[src='" + elements.get(0).getAttribute("src").replaceAll("http.*" + root, "") + "']";
-                return result;
-            }
-        } catch (InvalidSelectorException | NullPointerException e) {
-        }
-
-        //value
-        try {
-            selector = "[value='" + webElement.getAttribute("value") + "']";
-            elements = driver.findElements(By.cssSelector(selector));
-            if ((elements.size() == 1) && elements.contains(webElement)) {
-                //System.out.println("found cssSelector:" + selector);
-                result[0] = "cssSelector";
-                result[1] = "[value='" + elements.get(0).getAttribute("value") + "']";
                 return result;
             }
         } catch (InvalidSelectorException | NullPointerException e) {
