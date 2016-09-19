@@ -228,8 +228,8 @@ class BrowserDriver implements Runnable {
             Pattern frametag = Pattern.compile("(?i)(<i?frame[^set]\\b[^>]*>(.*?))");
             Matcher fm = frametag.matcher(driver.getPageSource());
             while (fm.find()) {
-                Pattern idtag = Pattern.compile("(?i)(?:id)\\s*=\\s*\"(\\S+)\"");
-                Pattern nametag = Pattern.compile("(?i)(?:name)\\s*=\\s*\"(\\S+)\"");
+                Pattern idtag = Pattern.compile("(?i)(?: id)\\s*=\\s*\"(\\S+)\"");
+                Pattern nametag = Pattern.compile("(?i)(?: name)\\s*=\\s*\"(\\S+)\"");
                 Matcher im = idtag.matcher(fm.group(1));
                 Matcher nm = nametag.matcher(fm.group(1));
                 while (im.find()) {
@@ -237,7 +237,7 @@ class BrowserDriver implements Runnable {
                     frame = Const.ID + im.group(1);
                 }
                 while (nm.find()) {
-                    //unles 'frames' is set
+                    //unless 'name' is set
                     frame = nm.group(1);
                 }
 
