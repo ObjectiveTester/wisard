@@ -413,7 +413,6 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         pathCR.setColumns(20);
         pathCR.setText("pathCR");
         pathCR.setToolTipText("Path to Chrome driver");
-        pathCR.setRequestFocusEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 11;
@@ -973,6 +972,6 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
             //crop the text
             message = message.substring(0, Const.MAX_SIZ);
         }
-        JOptionPane.showMessageDialog(new JFrame(), message, "Error", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(new JFrame(), message.replace(". ", ". \n"), "Error", JOptionPane.INFORMATION_MESSAGE);
     }
 }

@@ -355,7 +355,6 @@
                 <Property name="columns" type="int" value="20"/>
                 <Property name="text" type="java.lang.String" value="pathCR"/>
                 <Property name="toolTipText" type="java.lang.String" value="Path to Chrome driver"/>
-                <Property name="requestFocusEnabled" type="boolean" value="false"/>
               </Properties>
               <AccessibilityProperties>
                 <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Crome driver"/>

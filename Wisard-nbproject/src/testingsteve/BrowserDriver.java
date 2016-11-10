@@ -15,6 +15,7 @@ import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -120,14 +121,16 @@ class BrowserDriver implements Runnable {
     }
 
     boolean initSA(String url) {
-        //FF
+        //SA
         try {
             driver = new SafariDriver();
             js = (JavascriptExecutor) driver;
             writer.writeHeader(url, "SA");
             driver.get(url);
-        } catch (WebDriverException e) {
-            ui.errorMessage("Invalid URL?");
+        } catch (SessionNotCreatedException e) {
+            ui.errorMessage(e.getMessage().substring(0, e.getMessage().indexOf(10)));
+            return false;
+        } catch (Exception e) {
             return false;
         }
         return true;
