@@ -21,6 +21,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.safari.SafariDriver;
@@ -46,13 +47,17 @@ class BrowserDriver implements Runnable {
         }
     }
 
-    boolean initFF(String url) {
+    boolean initFF(String url, String path) {
         //FF
         try {
+            System.setProperty("webdriver.gecko.driver", path);
             driver = new FirefoxDriver();
             js = (JavascriptExecutor) driver;
             writer.writeHeader(url, "FF");
             driver.get(url);
+        } catch (IllegalStateException ise) {
+            ui.errorMessage("Path to Gecko driver is invalid, check settings.");
+            return false;
         } catch (WebDriverException e) {
             ui.errorMessage("Invalid URL?");
             return false;
@@ -88,6 +93,24 @@ class BrowserDriver implements Runnable {
             driver.get(url);
         } catch (IllegalStateException ise) {
             ui.errorMessage("Path to IE driver is invalid, check settings.");
+            return false;
+        } catch (WebDriverException e) {
+            ui.errorMessage("Invalid URL?");
+            return false;
+        }
+        return true;
+    }
+
+    boolean initED(String url, String path) {
+        //Edge
+        try {
+            System.setProperty("webdriver.edge.driver", path);
+            driver = new EdgeDriver();
+            js = (JavascriptExecutor) driver;
+            writer.writeHeader(url, "ED");
+            driver.get(url);
+        } catch (IllegalStateException ise) {
+            ui.errorMessage("Path to Edge driver is invalid, check settings.");
             return false;
         } catch (WebDriverException e) {
             ui.errorMessage("Invalid URL?");
@@ -149,75 +172,94 @@ class BrowserDriver implements Runnable {
                 traverse(target.toString(), false);
             }
 
-            //links
-            //System.out.println("links:" + Integer.parseInt((js.executeScript("return document.links.length;")).toString()));
-            List<WebElement> links = (List<WebElement>) (js.executeScript("return document.links;"));
-            for (WebElement element : links) {
-                ui.addItem("link", location, element.getAttribute("text"), element.getAttribute("id"), element.getAttribute("href"), element, element.isDisplayed());
+            try {
+                //links
+                //System.out.println("links:" + Integer.parseInt((js.executeScript("return document.links.length;")).toString()));
+                List<WebElement> links = (List<WebElement>) (js.executeScript("return document.links;"));
+                for (WebElement element : links) {
+                    ui.addItem("link", location, element.getAttribute("text"), element.getAttribute("id"), element.getAttribute("href"), element, element.isDisplayed());
+                }
+            } catch (Exception e) {
+                ui.errorMessage("Failed to find links");
             }
 
-            //forms
-            //System.out.println("forms:" + Integer.parseInt((js.executeScript("return document.forms.length;")).toString()));
-            //you can't return all the forms, so do each individually
-            int i = 0;
-            WebElement form = (WebElement) ((js.executeScript("return document.forms[" + i + "];")));
-            while (form != null) {
-                ui.addItem("form" + i, location, form.getAttribute("name"), form.getAttribute("id"), "", form, form.isDisplayed());
-                //System.out.println("form " + i + ", " + Integer.parseInt((js.executeScript("return document.forms[" + i + "].length;")).toString()) + " elements");
+            try {
+                //forms
+                //System.out.println("forms:" + Integer.parseInt((js.executeScript("return document.forms.length;")).toString()));
+                //you can't return all the forms, so do each individually
+                int i = 0;
+                WebElement form = (WebElement) ((js.executeScript("return document.forms[" + i + "];")));
+                while (form != null) {
+                    ui.addItem("form" + i, location, form.getAttribute("name"), form.getAttribute("id"), "", form, form.isDisplayed());
+                    //System.out.println("form " + i + ", " + Integer.parseInt((js.executeScript("return document.forms[" + i + "].length;")).toString()) + " elements");
 
-                List<WebElement> formElement = (List<WebElement>) (js.executeScript("return document.forms[" + i + "].elements;"));
-                for (WebElement element : formElement) {
+                    List<WebElement> formElement = (List<WebElement>) (js.executeScript("return document.forms[" + i + "].elements;"));
+                    for (WebElement element : formElement) {
+                        if ((element.getAttribute("type").contentEquals("radio")) || (element.getAttribute("type").contentEquals("checkbox"))) {
+                            value = element.getAttribute("checked");
+                        } else {
+                            value = element.getAttribute("value");
+                        }
 
-                    if ((element.getAttribute("type").contentEquals("radio")) || (element.getAttribute("type").contentEquals("checkbox"))) {
-                        value = element.getAttribute("checked");
-                    } else {
-                        value = element.getAttribute("value");
+                        ui.addItem("form" + i + ":" + element.getAttribute("type"), location, element.getAttribute("name"), element.getAttribute("id"), value, element, element.isDisplayed());
+                        inputElements.add(element);
+                    }
+                    i++;
+                    form = (WebElement) ((js.executeScript("return document.forms[" + i + "];")));
+                }
+            } catch (Exception e) {
+                ui.errorMessage("Failed to find form content");
+            }
+
+            try {
+                //non-form input elements
+                List<WebElement> inputs = driver.findElements(By.tagName("input"));
+                inputs.addAll(driver.findElements(By.tagName("select")));
+                inputs.addAll(driver.findElements(By.tagName("button")));
+
+                for (WebElement element : inputs) {
+                    //see if we've added this webElement already
+                    Boolean present = false;
+                    for (WebElement in : inputElements) {
+                        if (in.equals(element)) {
+                            present = true;
+                        }
+                    }
+                    if (!present) {
+                        if ((element.getAttribute("type").contentEquals("radio")) || (element.getAttribute("type").contentEquals("checkbox"))) {
+                            value = element.getAttribute("checked");
+                        } else {
+                            value = element.getAttribute("value");
+                        }
+                        ui.addItem("input:" + element.getAttribute("type"), location, element.getAttribute("name"), element.getAttribute("id"), value, element, element.isDisplayed());
+                        inputElements.add(element);
                     }
 
-                    ui.addItem("form" + i + ":" + element.getAttribute("type"), location, element.getAttribute("name"), element.getAttribute("id"), value, element, element.isDisplayed());
-                    inputElements.add(element);
                 }
-                i++;
-                form = (WebElement) ((js.executeScript("return document.forms[" + i + "];")));
+            } catch (Exception e) {
+                ui.errorMessage("Failed to find input elements");
             }
 
-            //non-form input elements
-            List<WebElement> inputs = driver.findElements(By.tagName("input"));
-            inputs.addAll(driver.findElements(By.tagName("select")));
-            inputs.addAll(driver.findElements(By.tagName("button")));
-
-            for (WebElement element : inputs) {
-                //see if we've added this webElement already
-                Boolean present = false;
-                for (WebElement in : inputElements) {
-                    if (in.equals(element)) {
-                        present = true;
-                    }
+            try {
+                //images
+                //System.out.println("images:" + Integer.parseInt((js.executeScript("return document.images.length;")).toString()));
+                List<WebElement> images = (List<WebElement>) (js.executeScript("return document.images;"));
+                for (WebElement element : images) {
+                    ui.addItem("image", location, element.getAttribute("alt"), element.getAttribute("id"), element.getAttribute("src"), element, element.isDisplayed());
                 }
-                if (!present) {
-                    if ((element.getAttribute("type").contentEquals("radio")) || (element.getAttribute("type").contentEquals("checkbox"))) {
-                        value = element.getAttribute("checked");
-                    } else {
-                        value = element.getAttribute("value");
-                    }
-                    ui.addItem("input:" + element.getAttribute("type"), location, element.getAttribute("name"), element.getAttribute("id"), value, element, element.isDisplayed());
-                    inputElements.add(element);
-                }
-
+            } catch (Exception e) {
+                ui.errorMessage("Failed to find images");
             }
 
-            //images
-            //System.out.println("images:" + Integer.parseInt((js.executeScript("return document.images.length;")).toString()));
-            List<WebElement> images = (List<WebElement>) (js.executeScript("return document.images;"));
-            for (WebElement element : images) {
-                ui.addItem("image", location, element.getAttribute("alt"), element.getAttribute("id"), element.getAttribute("src"), element, element.isDisplayed());
-            }
-
-            //anchors
-            //System.out.println("anchors:" + Integer.parseInt((js.executeScript("return document.anchors.length;")).toString()));
-            List<WebElement> anchors = (List<WebElement>) (js.executeScript("return document.anchors;"));
-            for (WebElement element : anchors) {
-                ui.addItem("anchor", location, element.getAttribute("text"), element.getAttribute("id"), element.getAttribute("name"), element, element.isDisplayed());
+            try {
+                //anchors
+                //System.out.println("anchors:" + Integer.parseInt((js.executeScript("return document.anchors.length;")).toString()));
+                List<WebElement> anchors = (List<WebElement>) (js.executeScript("return document.anchors;"));
+                for (WebElement element : anchors) {
+                    ui.addItem("anchor", location, element.getAttribute("text"), element.getAttribute("id"), element.getAttribute("name"), element, element.isDisplayed());
+                }
+            } catch (Exception e) {
+                ui.errorMessage("Failed to find anchors");
             }
 
             //frame nav
@@ -237,7 +279,7 @@ class BrowserDriver implements Runnable {
                     frame = Const.ID + im.group(1);
                 }
                 while (nm.find()) {
-                    //unless 'name' is set
+                    //unles 'frames' is set
                     frame = nm.group(1);
                 }
 
@@ -627,12 +669,14 @@ class BrowserDriver implements Runnable {
         }
 
         //id
-        elements = driver.findElements(By.id(webElement.getAttribute("id")));
-        if ((elements.size() == 1) && elements.contains(webElement)) {
-            //System.out.println("found id:" + elements.get(0).getAttribute("id"));
-            result[0] = "id";
-            result[1] = elements.get(0).getAttribute("id");
-            return result;
+        if (!webElement.getAttribute("id").isEmpty()) {  //prevent FF crash
+            elements = driver.findElements(By.id(webElement.getAttribute("id")));
+            if ((elements.size() == 1) && elements.contains(webElement)) {
+                //System.out.println("found id:" + elements.get(0).getAttribute("id"));
+                result[0] = "id";
+                result[1] = elements.get(0).getAttribute("id");
+                return result;
+            }
         }
 
         //alt

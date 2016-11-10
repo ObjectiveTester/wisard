@@ -49,7 +49,7 @@ public class DefaultWriter {
             action = "        alert.dismiss();\n";
         }
         ui.insertCode("\n        //alert:" + question + "\n"
-                + "        alert = driver.switchTo().alert();"
+                + "        alert = driver.switchTo().alert();\n"
                 + action
                 + "", footer);
     }

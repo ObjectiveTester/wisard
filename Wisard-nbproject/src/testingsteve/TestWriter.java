@@ -25,6 +25,7 @@ class TestWriter extends DefaultWriter {
 
             case "FF":
                 driverImport = "import org.openqa.selenium.firefox.FirefoxDriver;\n";
+                sysProp = "        System.setProperty(\"webdriver.gecko.driver\", \"<path>\");\n";
                 driverInit = "        driver = new FirefoxDriver();\n";
                 break;
 
@@ -39,7 +40,13 @@ class TestWriter extends DefaultWriter {
                 sysProp = "        System.setProperty(\"webdriver.ie.driver\", \"<path>\");\n";
                 driverInit = "        driver = new InternetExplorerDriver();\n";
                 break;
-                
+
+            case "ED":
+                driverImport = "import org.openqa.selenium.edge.EdgeDriver;\n";
+                sysProp = "        System.setProperty(\"webdriver.edge.driver\", \"<path>\");\n";
+                driverInit = "        WebDriver driver = new EdgeDriver();\n";
+                break;
+
             case "SA":
                 driverImport = "import org.openqa.selenium.safari.SafariDriver;\n";
                 driverInit = "        driver = new SafariDriver();\n";
