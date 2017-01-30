@@ -32,7 +32,8 @@ public class DefaultWriter {
     }
 
     void writeSelectEvent(String data) {
-        ui.insertCode("\n        element.sendKeys(\"" + data + "\\n\");"
+        ui.insertCode("\n        selector = new Select(element);\n"
+                + "        selector.selectByVisibleText(\"" + data + "\");"
                 + "", footer);
     }
 

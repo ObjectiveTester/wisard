@@ -56,11 +56,13 @@ class ScriptWriter extends DefaultWriter {
                 + "import org.openqa.selenium.WebDriver;\n"
                 + "import org.openqa.selenium.WebElement;\n"
                 + "import org.openqa.selenium.By;\n"
-                + "import org.openqa.selenium.Alert;\n\n"
+                + "import org.openqa.selenium.Alert;\n"
+                + "import org.openqa.selenium.support.ui.Select;\n\n"
                 + "public class RecordedScript {\n\n"
                 + "    public static void main(String[] args) {\n"
                 + "        WebElement element;\n"
                 + "        Alert alert;\n"
+                + "        Select selector;\n"
                 + sysProp
                 + driverInit
                 + "        JavascriptExecutor js = (JavascriptExecutor) driver;\n"

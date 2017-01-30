@@ -71,7 +71,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="labelCopyright">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&#xa9; Steve Mellor 2014-2016"/>
+                <Property name="text" type="java.lang.String" value="&#xa9; Steve Mellor 2014-2017"/>
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -385,7 +385,7 @@
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Tahoma" size="11" style="2"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="built in"/>
+                <Property name="text" type="java.lang.String" value="/usr/bin/safaridriver"/>
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">

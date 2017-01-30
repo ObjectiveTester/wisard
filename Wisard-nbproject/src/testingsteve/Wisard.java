@@ -215,7 +215,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         gridBagConstraints.gridy = 1;
         panelAbout.add(labelDesc, gridBagConstraints);
 
-        labelCopyright.setText("© Steve Mellor 2014-2016");
+        labelCopyright.setText("© Steve Mellor 2014-2017");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -435,7 +435,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         pathIE.getAccessibleContext().setAccessibleName("IE driver");
 
         labelPlugin.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
-        labelPlugin.setText("built in");
+        labelPlugin.setText("/usr/bin/safaridriver");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 17;
@@ -488,7 +488,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
             dialogSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 400, Short.MAX_VALUE)
             .addGroup(dialogSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(panelSettings, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
+                .addComponent(panelSettings, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 400, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);

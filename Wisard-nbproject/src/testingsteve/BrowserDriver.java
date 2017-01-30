@@ -513,14 +513,11 @@ class BrowserDriver implements Runnable {
 
     void select(WebElement webElement, String target) {
         //extract the choices
+        Select selector = new Select(webElement);
+        List<WebElement> selectOptions = selector.getOptions();
         List<String> items = new ArrayList<>();
-        Pattern value = Pattern.compile("(?i)value\\s*=\\s*\"(\\S+)\"");
-        Matcher m = value.matcher(webElement.getAttribute("innerHTML"));
-        while (m.find()) {
-            items.add(m.group(1));
-        }
-        if (items.isEmpty()) {
-            items.add("");
+        for (WebElement option : selectOptions) {
+            items.add(option.getText());
         }
         String[] choices = items.toArray(new String[0]);
         //make a choice
@@ -534,11 +531,12 @@ class BrowserDriver implements Runnable {
                     //if we had to navigate here, switch back
                     writer.writeSwitchBack();
                 }
-                webElement.sendKeys(data + "\n");
+                selector.selectByVisibleText(data);
                 driver.switchTo().defaultContent();
                 writer.writeEnd();
             }
         }
+
     }
 
     void verify(WebElement webElement, String target, String element, String expected) {
