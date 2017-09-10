@@ -5,18 +5,22 @@ Web Internal Structure Action RecorDer - a webdriver based tool for creating Sel
 
 Building wisard
 ===============
-Open the 'wisard' folder in NetBeans, right click on the project and select 'Properties' -> 'Libraries' and configure the path to the 'selenium-server-standalone' JAR from http://docs.seleniumhq.org/download/
 
-Then right click on the project and 'Build'. The project includes a custom 'manifest.mf' with a hardwired 'Class-Path' to the 'selenium-server-standalone' JAR - you'll have to update this as well if you use anything other than 3.0.1.
+Clone or download the source code and either:
+
+Open the 'wisard' folder in NetBeans or your favourite IDE, and build it.
+
+Build a package from the command line with:
+
+    mvn package 
+
 
 Running wisard
 ==============
 
+Once built, either double-click 'Wisard-1.0.jar' or start from the command line with:
 
-
-Copy 'Wisard.jar' into the same directory as 'selenium-server-standalone-3.0.1.jar' and then either double-click 'Wisard.jar' or start from the command line with:
-
-    java -jar Wisard.jar
+    java -jar Wisard-1.0.jar
     
 
 Then enter a web URL and click 'Inspect'
