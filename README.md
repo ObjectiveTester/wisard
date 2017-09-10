@@ -32,4 +32,4 @@ wisard can set and verify input elements, verify and click links and anchors, an
 By correctly setting the 'driver' settings on the 'Settings' tab, wisard can open and record scripts in 'Firefox (50+)', 'Chrome', 'Internet Explorer', 'Edge' and 'Safari' - download the correct drivers from http://docs.seleniumhq.org/download/
 
 
-Screenshots and more can be found here : http://testingsteve.github.io/wisard
+Screenshots and more can be found here : http://objectivetester.github.io/wisard
