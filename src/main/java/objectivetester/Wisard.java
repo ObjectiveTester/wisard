@@ -1,4 +1,4 @@
-package testingsteve;
+package objectivetester;
 
 import java.awt.Cursor;
 import java.awt.Desktop;
@@ -35,7 +35,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
      * Creates new form Wisard
      */
     public Wisard() {
-        URL iconURL = getClass().getResource("wisard.png");
+        URL iconURL = getClass().getResource("/images/wisard.png");
         icon = new ImageIcon(iconURL);
 
         //create the tablemodel for the element table
@@ -221,7 +221,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         gridBagConstraints.gridy = 2;
         panelAbout.add(labelCopyright, gridBagConstraints);
 
-        labelLink.setText("<html> <a href=\"https://github.com/testingsteve/wisard\">Wisard on github</a></html>");
+        labelLink.setText("<html> <a href=\"https://github.com/objectivetester/wisard\">Wisard on github</a></html>");
         labelLink.setToolTipText("");
         labelLink.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -488,14 +488,13 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
             dialogSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 400, Short.MAX_VALUE)
             .addGroup(dialogSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(panelSettings, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 400, Short.MAX_VALUE))
+                .addComponent(panelSettings, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Wisard");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setIconImage(icon.getImage());
-        setPreferredSize(new java.awt.Dimension(500, 500));
 
         tabPane.setMinimumSize(new java.awt.Dimension(300, 300));
         tabPane.setPreferredSize(new java.awt.Dimension(300, 300));
@@ -632,8 +631,9 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
     private void buttonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSaveActionPerformed
 
         //update UI
-        currentUrl.setText(defaultURL.getText());
-
+        if (!buttonInspect.isSelected()) {
+            currentUrl.setText(defaultURL.getText());
+        }
         if (!prefs.getBoolean("showId", false) && checkBoxId.isSelected()) {
             //reset table to show id
             jTable1Model.fireTableStructureChanged();
@@ -647,6 +647,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
 
         //save new settings
         prefs.put("defaultURL", defaultURL.getText());
+
         prefs.putBoolean("showId", checkBoxId.isSelected());
         prefs.putBoolean("showInvis", checkBoxInvis.isSelected());
 
@@ -731,12 +732,12 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         // TODO add your handling code here:
         if (Desktop.isDesktopSupported()) {
             try {
-                Desktop.getDesktop().browse(new URI("https://github.com/testingsteve/wisard"));
+                Desktop.getDesktop().browse(new URI("https://github.com/objectivetester/wisard"));
             } catch (URISyntaxException | IOException | UnsupportedOperationException ex) {
-                this.errorMessage("Unable to open browser, please visit:\n https://github.com/testingsteve/wisard");
+                this.errorMessage("Unable to open browser, please visit:\n https://github.com/objectivetester/wisard");
             }
         } else {
-            this.errorMessage("Unable to open browser, please visit:\n https://github.com/testingsteve/wisard");
+            this.errorMessage("Unable to open browser, please visit:\n https://github.com/objectivetester/wisard");
         }
     }//GEN-LAST:event_labelLinkMouseClicked
 
@@ -883,14 +884,14 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
     }
 
     @Override
-    public void addItem(String element, String location, String name, String id, String value, Object webElement, Boolean displayed) {
+    public void addItem(String element, Object stack, String name, String id, String value, Object webElement, Boolean displayed) {
         //adds content to the elements table
         if ((!displayed) && (prefs.getBoolean("showInvis", false))) {
-            location = location + Const.INVISIBLE;
-            Object item = new Object[]{element, location, name, id, value, webElement};
+            element = Const.INVISIBLE + element;
+            Object item = new Object[]{element, stack, name, id, value, webElement};
             jTable1Model.addRow((Object[]) item);
         } else if (displayed) {
-            Object item = new Object[]{element, location, name, id, value, webElement};
+            Object item = new Object[]{element, stack, name, id, value, webElement};
             jTable1Model.addRow((Object[]) item);
         }
     }

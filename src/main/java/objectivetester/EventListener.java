@@ -1,8 +1,9 @@
-package testingsteve;
+package objectivetester;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import org.openqa.selenium.WebElement;
@@ -75,12 +76,12 @@ class EventListener extends MouseAdapter implements java.awt.event.ActionListene
                 popup.getComponent(0).setEnabled(false);
                 popup.getComponent(2).setEnabled(false);
             }
-            if ((table.getValueAt(current, 0).toString().endsWith(":hidden"))) {
+            if (table.getValueAt(current, 0).toString().endsWith(":hidden")) {
                 //cant click or id hidden form fields
                 popup.getComponent(0).setEnabled(false);
                 popup.getComponent(3).setEnabled(false);
             }
-            if ((table.getValueAt(current, 1).toString().contains(Const.INVISIBLE))) {
+            if (table.getValueAt(current, 0).toString().startsWith(Const.INVISIBLE)) {
                 //cant click or id invisible objects
                 popup.getComponent(0).setEnabled(false);
                 popup.getComponent(3).setEnabled(false);
@@ -94,20 +95,30 @@ class EventListener extends MouseAdapter implements java.awt.event.ActionListene
         int idx = table.rowAtPoint(e.getPoint());
         table.getSelectionModel().setSelectionInterval(idx, idx);
         current = table.getSelectedRow();
+        Object stack;
         String element = table.getModel().getValueAt(current, 0).toString();
-        String location = table.getModel().getValueAt(current, 1).toString();
+        if (table.getModel().getValueAt(current, 1).getClass().equals(String.class)) {
+            stack = (String) table.getModel().getValueAt(current, 1);
+        } else {
+            stack = (ArrayList) table.getModel().getValueAt(current, 1);
+        }
         Object webElement = table.getModel().getValueAt(current, 5);
         //if it's an element, highlight it
         //the element column is only in the model, so use the model to retreive it
-        if (!(element.contentEquals(Const.TITLE))) {
-            bd.highlight((WebElement) webElement, location);
+        if (!element.contentEquals(Const.TITLE) && !element.startsWith(Const.INVISIBLE)) {
+            bd.highlight((WebElement) webElement, stack);
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         String element = table.getModel().getValueAt(current, 0).toString();
-        String location = table.getModel().getValueAt(current, 1).toString();
+        Object stack;
+        if (table.getModel().getValueAt(current, 1).getClass().equals(String.class)) {
+            stack = (String) table.getModel().getValueAt(current, 1);
+        } else {
+            stack = (ArrayList) table.getModel().getValueAt(current, 1);
+        }
         String name = table.getModel().getValueAt(current, 2).toString();
         String id = table.getModel().getValueAt(current, 3).toString();
         Object value = table.getModel().getValueAt(current, 4);
@@ -116,19 +127,19 @@ class EventListener extends MouseAdapter implements java.awt.event.ActionListene
         if (e.getActionCommand().contains(Const.CLICK)) {
             if (element.contentEquals("link") || element.contentEquals("image") || element.contentEquals("anchor") || element.endsWith(":radio") || element.endsWith(":checkbox") || element.endsWith(":submit") || element.endsWith(":button") || element.endsWith(":reset")) {
                 //clickable
-                bd.click((WebElement) webElement, location);
+                bd.click((WebElement) webElement, stack);
             } else if (element.endsWith(":select-one")) {
                 //selection
-                bd.select((WebElement) webElement, location);
+                bd.select((WebElement) webElement, stack);
             } else if (element.contentEquals(Const.TITLE)) {
                 //page title
                 bd.switchWin((String) webElement, (String) value);
             } else if (element.endsWith(":range") || element.endsWith(":color")) {
                 //special input
-                bd.inputjs((WebElement) webElement, location);
+                bd.inputjs((WebElement) webElement, stack);
             } else {
                 //general input element
-                bd.input((WebElement) webElement, location);
+                bd.input((WebElement) webElement, stack);
             }
         }
 
@@ -139,7 +150,7 @@ class EventListener extends MouseAdapter implements java.awt.event.ActionListene
                 //page title
             } else {
                 //page element
-                bd.find((WebElement) webElement, location, Const.FIND);
+                bd.find((WebElement) webElement, stack, Const.FIND);
             }
         }
 
@@ -148,13 +159,13 @@ class EventListener extends MouseAdapter implements java.awt.event.ActionListene
                 .contains(Const.ASSERT)) {
             if (element.contentEquals(Const.TITLE)) {
                 //page title
-                if (location.contentEquals(Const.CURRENT)) {
+                if (stack.getClass().equals(ArrayList.class)) {
                     //current page
                     bd.verifyPage((String) value);
                 }
             } else {
                 //page element
-                bd.verify((WebElement) webElement, location, element, (String) value);
+                bd.verify((WebElement) webElement, stack, element, (String) value);
             }
         }
 
@@ -165,7 +176,7 @@ class EventListener extends MouseAdapter implements java.awt.event.ActionListene
                 //page title
             } else {
                 //page element
-                bd.ident((WebElement) webElement, location, (String) element, name, id, (String) value);
+                bd.ident((WebElement) webElement, stack, (String) element, name, id, (String) value);
 
             }
         }

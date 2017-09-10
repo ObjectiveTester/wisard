@@ -1,4 +1,4 @@
-package testingsteve;
+package objectivetester;
 
 /**
  *
@@ -54,16 +54,10 @@ public class DefaultWriter {
                 + action
                 + "", footer);
     }
-
-    void writeSwitchByName(String frame) {
+    
+    void writeSwitchByIndex(int frame) {
         ui.insertCode("\n        //switch to:" + frame + "\n"
-                + "        driver.switchTo().frame(driver.findElement(By.name(\"" + frame + "\")));"
-                + "", footer);
-    }
-
-    void writeSwitchById(String frame) {
-        ui.insertCode("\n        //switch to:" + frame + "\n"
-                + "        driver.switchTo().frame(driver.findElement(By.id(\"" + frame + "\")));"
+                + "        driver.switchTo().frame(" + frame + ");"
                 + "", footer);
     }
 

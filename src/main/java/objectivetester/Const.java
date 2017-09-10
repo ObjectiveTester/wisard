@@ -1,4 +1,4 @@
-package testingsteve;
+package objectivetester;
 
 /**
  *
@@ -15,9 +15,7 @@ interface Const {
 
     static final String IDENTIFY = "identify";
 
-    static final String INVISIBLE = "(invisible)";
-
-    static final String ID = "(id)";
+    static final String INVISIBLE = "(invisible) ";
 
     static final String PAGE = "page";
 
@@ -26,9 +24,6 @@ interface Const {
     static final String WINDOW = "other window";
 
     static final String CURRENT = "current focus";
-
-    //the seperator for nested frames
-    static final String SEP = "->";
 
     //the style to 'highlight' an element
     static final String HIGHLIGHT = "'color: yellow; font-weight: bold; border: 2px dotted red;'";

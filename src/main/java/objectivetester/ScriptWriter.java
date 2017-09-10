@@ -1,4 +1,4 @@
-package testingsteve;
+package objectivetester;
 
 /**
  *
@@ -22,25 +22,25 @@ class ScriptWriter extends DefaultWriter {
 
             case "FF":
                 driverImport = "import org.openqa.selenium.firefox.FirefoxDriver;\n";
-                sysProp = "        System.setProperty(\"webdriver.gecko.driver\", \"<path>\");\n";
+                sysProp = "        System.setProperty(\"webdriver.gecko.driver\", \""+System.getProperty("webdriver.gecko.driver")+"\");\n";
                 driverInit = "        WebDriver driver = new FirefoxDriver();\n";
                 break;
 
             case "CR":
                 driverImport = "import org.openqa.selenium.chrome.ChromeDriver;\n";
-                sysProp = "        System.setProperty(\"webdriver.chrome.driver\", \"<path>\");\n";
+                sysProp = "        System.setProperty(\"webdriver.chrome.driver\", \""+System.getProperty("webdriver.chrome.driver")+"\");\n";
                 driverInit = "        WebDriver driver = new ChromeDriver();\n";
                 break;
 
             case "IE":
                 driverImport = "import org.openqa.selenium.ie.InternetExplorerDriver;\n";
-                sysProp = "        System.setProperty(\"webdriver.ie.driver\", \"<path>\");\n";
+                sysProp = "        System.setProperty(\"webdriver.ie.driver\", \""+System.getProperty("webdriver.ie.driver")+"\");\n";
                 driverInit = "        WebDriver driver = new InternetExplorerDriver();\n";
                 break;
 
             case "ED":
                 driverImport = "import org.openqa.selenium.edge.EdgeDriver;\n";
-                sysProp = "        System.setProperty(\"webdriver.edge.driver\", \"<path>\");\n";
+                sysProp = "        System.setProperty(\"webdriver.edge.driver\", \""+System.getProperty("webdriver.edge.driver")+"\");\n";
                 driverInit = "        WebDriver driver = new EdgeDriver();\n";
                 break;
 

@@ -1,4 +1,4 @@
-package testingsteve;
+package objectivetester;
 
 /**
  *
@@ -6,7 +6,7 @@ package testingsteve;
  */
 interface UserInterface {
 
-    void addItem(String type, String location, String name, String id, String value, Object element, Boolean displayed);
+    void addItem(String type, Object stack, String name, String id, String value, Object element, Boolean displayed);
 
     void rescan();
 
