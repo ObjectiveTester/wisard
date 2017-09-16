@@ -7,6 +7,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -35,9 +37,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
      * Creates new form Wisard
      */
     public Wisard() {
-        URL iconURL = getClass().getResource("/images/wisard.png");
-        icon = new ImageIcon(iconURL);
-
+        icon = new ImageIcon(getClass().getResource("/images/wisard.png"));
         //create the tablemodel for the element table
         jTable1Model = new javax.swing.table.DefaultTableModel(
                 new Object[][]{},
@@ -56,7 +56,18 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
 
         initComponents();
 
-        //create the popum menu for the element table
+        //redirect output to text area
+        PrintStream printStream = new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+                textConsole.append(String.valueOf((char) b));
+                textConsole.setCaretPosition(textConsole.getDocument().getLength());
+            }
+        });
+        System.setOut(printStream);
+        System.setErr(printStream);
+
+        //create the popup menu for the element table
         popup = new JPopupMenu();
         MouseListener popupListener = new EventListener(popup, tableElements, bd);
 
@@ -174,18 +185,20 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         buttonSave = new javax.swing.JButton();
         buttonCancel = new javax.swing.JButton();
         pathED = new javax.swing.JTextField();
-        tabPane = new javax.swing.JTabbedPane();
-        panelElements = new javax.swing.JPanel();
-        paneElements = new javax.swing.JScrollPane();
-        tableElements = new javax.swing.JTable();
-        tableElements.getTableHeader().setReorderingAllowed(false);
         jToolBar1 = new javax.swing.JToolBar();
         labelUrl = new javax.swing.JLabel();
         currentUrl = new javax.swing.JTextField();
         buttonInspect = new javax.swing.JToggleButton();
         buttonRefresh = new javax.swing.JButton();
-        panelCode = new javax.swing.JScrollPane();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        panelElements = new javax.swing.JPanel();
+        paneElements = new javax.swing.JScrollPane();
+        tableElements = new javax.swing.JTable();
+        tableElements.getTableHeader().setReorderingAllowed(false);
+        paneCode = new javax.swing.JScrollPane();
         code = new javax.swing.JTextArea();
+        paneConsole = new javax.swing.JScrollPane();
+        textConsole = new javax.swing.JTextArea();
         menuBar = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         menuExit = new javax.swing.JMenuItem();
@@ -496,22 +509,6 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setIconImage(icon.getImage());
 
-        tabPane.setMinimumSize(new java.awt.Dimension(300, 300));
-        tabPane.setPreferredSize(new java.awt.Dimension(300, 300));
-
-        panelElements.setPreferredSize(new java.awt.Dimension(300, 300));
-        panelElements.setLayout(new java.awt.BorderLayout());
-
-        paneElements.setPreferredSize(new java.awt.Dimension(300, 300));
-
-        tableElements.setModel(jTable1Model);
-        tableElements.setColumnSelectionAllowed(true);
-        tableElements.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        paneElements.setViewportView(tableElements);
-        tableElements.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-
-        panelElements.add(paneElements, java.awt.BorderLayout.CENTER);
-
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
@@ -532,11 +529,12 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         jToolBar1.add(currentUrl);
         currentUrl.getAccessibleContext().setAccessibleName("URL");
 
-        buttonInspect.setText("Inspect");
+        buttonInspect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/inspect.png"))); // NOI18N
         buttonInspect.setToolTipText("Open the URL");
         buttonInspect.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         buttonInspect.setFocusable(false);
         buttonInspect.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        buttonInspect.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cancel.png"))); // NOI18N
         buttonInspect.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         buttonInspect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -545,7 +543,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         });
         jToolBar1.add(buttonInspect);
 
-        buttonRefresh.setText("Refresh");
+        buttonRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/refresh.png"))); // NOI18N
         buttonRefresh.setToolTipText("Refresh the page elements list");
         buttonRefresh.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         buttonRefresh.setFocusable(false);
@@ -558,17 +556,41 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         });
         jToolBar1.add(buttonRefresh);
 
-        panelElements.add(jToolBar1, java.awt.BorderLayout.PAGE_START);
+        getContentPane().add(jToolBar1, java.awt.BorderLayout.PAGE_START);
 
-        tabPane.addTab("Elements", panelElements);
+        panelElements.setPreferredSize(new java.awt.Dimension(300, 300));
+        panelElements.setLayout(new java.awt.BorderLayout());
+
+        paneElements.setPreferredSize(new java.awt.Dimension(300, 300));
+
+        tableElements.setModel(jTable1Model);
+        tableElements.setColumnSelectionAllowed(true);
+        tableElements.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        paneElements.setViewportView(tableElements);
+        tableElements.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+
+        panelElements.add(paneElements, java.awt.BorderLayout.CENTER);
+
+        jSplitPane1.setLeftComponent(panelElements);
 
         code.setEditable(false);
         code.setColumns(20);
+        code.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
         code.setRows(5);
         code.setTabSize(4);
-        panelCode.setViewportView(code);
+        paneCode.setViewportView(code);
 
-        tabPane.addTab("Generated Code", panelCode);
+        jSplitPane1.setRightComponent(paneCode);
+
+        getContentPane().add(jSplitPane1, java.awt.BorderLayout.CENTER);
+
+        textConsole.setEditable(false);
+        textConsole.setColumns(20);
+        textConsole.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        textConsole.setRows(5);
+        paneConsole.setViewportView(textConsole);
+
+        getContentPane().add(paneConsole, java.awt.BorderLayout.PAGE_END);
 
         menuFile.setText("File");
 
@@ -607,19 +629,6 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         menuBar.add(menuHelp);
 
         setJMenuBar(menuBar);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabPane, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(tabPane, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE))
-        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -846,6 +855,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
     private javax.swing.JTextField defaultURL;
     private javax.swing.JDialog dialogAbout;
     private javax.swing.JDialog dialogSettings;
+    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel labelCopyright;
     private javax.swing.JLabel labelDefurl;
@@ -864,17 +874,18 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
     private javax.swing.JMenu menuFile;
     private javax.swing.JMenu menuHelp;
     private javax.swing.JMenuItem menuSettings;
+    private javax.swing.JScrollPane paneCode;
+    private javax.swing.JScrollPane paneConsole;
     private javax.swing.JScrollPane paneElements;
     private javax.swing.JPanel panelAbout;
-    private javax.swing.JScrollPane panelCode;
     private javax.swing.JPanel panelElements;
     private javax.swing.JPanel panelSettings;
     private javax.swing.JTextField pathCR;
     private javax.swing.JTextField pathED;
     private javax.swing.JTextField pathFF;
     private javax.swing.JTextField pathIE;
-    private javax.swing.JTabbedPane tabPane;
     private javax.swing.JTable tableElements;
+    private javax.swing.JTextArea textConsole;
     // End of variables declaration//GEN-END:variables
 
     private void exitProcedure() {

@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
@@ -56,10 +57,15 @@ class BrowserDriver implements Runnable {
             writer.writeHeader(url, "FF");
             driver.get(url);
         } catch (IllegalStateException ise) {
+            System.err.println(ise);
             ui.errorMessage("Path to Gecko driver is invalid, check settings.");
             return false;
-        } catch (WebDriverException e) {
+        } catch (InvalidArgumentException iae) {
+            System.err.println(iae);
             ui.errorMessage("Invalid URL?");
+            return false;
+        } catch (Exception e) {
+            System.err.println(e);
             return false;
         }
         return true;
@@ -74,10 +80,15 @@ class BrowserDriver implements Runnable {
             writer.writeHeader(url, "CR");
             driver.get(url);
         } catch (IllegalStateException ise) {
+            System.err.println(ise);
             ui.errorMessage("Path to Chrome driver is invalid, check settings.");
             return false;
-        } catch (WebDriverException e) {
+        } catch (InvalidArgumentException iae) {
+            System.err.println(iae);
             ui.errorMessage("Invalid URL?");
+            return false;
+        } catch (Exception e) {
+            System.err.println(e);
             return false;
         }
         return true;
@@ -94,8 +105,11 @@ class BrowserDriver implements Runnable {
         } catch (IllegalStateException ise) {
             ui.errorMessage("Path to IE driver is invalid, check settings.");
             return false;
-        } catch (WebDriverException e) {
+        } catch (InvalidArgumentException iae) {
             ui.errorMessage("Invalid URL?");
+            return false;
+        } catch (Exception e) {
+            System.err.println(e);
             return false;
         }
         return true;
@@ -112,8 +126,11 @@ class BrowserDriver implements Runnable {
         } catch (IllegalStateException ise) {
             ui.errorMessage("Path to Edge driver is invalid, check settings.");
             return false;
-        } catch (WebDriverException e) {
+        } catch (InvalidArgumentException iae) {
             ui.errorMessage("Invalid URL?");
+            return false;
+        } catch (Exception e) {
+            System.err.println(e);
             return false;
         }
         return true;
@@ -130,6 +147,7 @@ class BrowserDriver implements Runnable {
             ui.errorMessage(e.getMessage().substring(0, e.getMessage().indexOf(10)));
             return false;
         } catch (Exception e) {
+            System.err.println(e);
             return false;
         }
         return true;
@@ -176,7 +194,7 @@ class BrowserDriver implements Runnable {
                 //System.out.println("links:" + Integer.parseInt((js.executeScript("return document.links.length;")).toString()));
                 List<WebElement> links = (List<WebElement>) (js.executeScript("return document.links;"));
                 for (WebElement element : links) {
-                    ui.addItem("link", stack, element.getAttribute("text"), element.getAttribute("id"), element.getAttribute("href"), element, element.isDisplayed());
+                    ui.addItem("link", stack, element.getAttribute("text").trim(), element.getAttribute("id"), element.getAttribute("href"), element, element.isDisplayed());
                 }
             } catch (Exception e) {
                 //ui.errorMessage("Failed to find links");
@@ -298,6 +316,7 @@ class BrowserDriver implements Runnable {
         if (driver != null) {
             try {
                 driver.quit();
+                driver = null;
             } catch (WebDriverException e) {
                 driver = null;
             }

@@ -18,12 +18,12 @@ Build a package from the command line with:
 Running wisard
 ==============
 
-Once built, either double-click 'Wisard-1.0.jar' or start from the command line with:
+Once built, either double-click 'Wisard-1.1.jar' or start from the command line with:
 
-    java -jar Wisard-1.0.jar
+    java -jar Wisard-1.1.jar
     
 
-Then enter a web URL and click 'Inspect'
+Then enter a web URL and click the find icon
 
 Using wisard
 ============
