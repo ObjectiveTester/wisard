@@ -31,4 +31,24 @@ interface Const {
     //max text to put in a dialog box
     static final int MAX_SIZ = 2048;
 
+    static final int POP_CLICK = 0;
+
+    static final int POP_FIND = 1;
+
+    static final int POP_ASSERT = 2;
+
+    static final int POP_ID = 3;
+
+    static final int TAB_ELEMENT = 0;
+
+    static final int TAB_LOCATION = 1;
+
+    static final int TAB_NAME = 2;
+
+    static final int TAB_ID = 3;
+
+    static final int TAB_VALUE = 3;
+
+    static final int TAB_WEBELEMENT = 5;
+
 }

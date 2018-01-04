@@ -292,7 +292,7 @@ class BrowserDriver implements Runnable {
                         stack = new ArrayList<>();
                     }
                     driver.switchTo().parentFrame();
-                    ArrayList<Integer> newstack = new ArrayList<Integer>((ArrayList) stack);
+                    ArrayList<Integer> newstack = new ArrayList<>((ArrayList) stack);
                     newstack.add(frame);
 
                     //down the rabbit hole....
@@ -464,6 +464,9 @@ class BrowserDriver implements Runnable {
 
                 if (method[0].contentEquals("id")) {
                     jsInput = "javascript:document.getElementById(\"" + method[1] + "\").value=\"" + data + "\";";
+                }
+                if (method[0].contentEquals("cssSelector")) {
+                    jsInput = jsInput.replace("getElementsByName", "querySelectorAll");
                 }
                 if (method[0].contentEquals("className")) {
                     jsInput = jsInput.replace("getElementsByName", "getElementsByClassName");
