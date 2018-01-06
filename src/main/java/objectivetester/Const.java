@@ -47,7 +47,7 @@ interface Const {
 
     static final int TAB_ID = 3;
 
-    static final int TAB_VALUE = 3;
+    static final int TAB_VALUE = 4;
 
     static final int TAB_WEBELEMENT = 5;
 
