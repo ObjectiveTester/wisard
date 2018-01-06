@@ -71,7 +71,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="labelCopyright">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&#xa9; Steve Mellor 2014-2017"/>
+                <Property name="text" type="java.lang.String" value="&#xa9; Steve Mellor 2014-2018"/>
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">

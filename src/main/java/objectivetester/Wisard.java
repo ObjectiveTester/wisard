@@ -228,7 +228,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         gridBagConstraints.gridy = 1;
         panelAbout.add(labelDesc, gridBagConstraints);
 
-        labelCopyright.setText("© Steve Mellor 2014-2017");
+        labelCopyright.setText("© Steve Mellor 2014-2018");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
