@@ -71,6 +71,12 @@ class EventListener extends MouseAdapter implements java.awt.event.ActionListene
                     popup.getComponent(Const.POP_CLICK).setEnabled(false);
                 }
             }
+            if (table.getValueAt(current, Const.TAB_ELEMENT).toString().contentEquals(Const.COOKIE)) {
+                //can only assert and change a cookie
+                popup.getComponent(Const.POP_CLICK).setEnabled(false);
+                popup.getComponent(Const.POP_ID).setEnabled(false);
+                popup.getComponent(Const.POP_FIND).setEnabled(false);
+            }
             if (table.getValueAt(current, Const.TAB_ELEMENT).toString().contentEquals("form") && !table.getValueAt(current, Const.TAB_ELEMENT).toString().contains(":")) {
                 //can only assert form elements, not forms
                 popup.getComponent(Const.POP_CLICK).setEnabled(false);
@@ -105,7 +111,7 @@ class EventListener extends MouseAdapter implements java.awt.event.ActionListene
         Object webElement = table.getModel().getValueAt(current, Const.TAB_WEBELEMENT);
         //if it's an element, highlight it
         //the element column is only in the model, so use the model to retreive it
-        if (!element.contentEquals(Const.TITLE) && !element.startsWith(Const.INVISIBLE)) {
+        if (!element.contentEquals(Const.TITLE) && !element.startsWith(Const.INVISIBLE) && !element.contentEquals(Const.COOKIE)) {
             bd.highlight((WebElement) webElement, stack);
         }
     }
@@ -159,10 +165,9 @@ class EventListener extends MouseAdapter implements java.awt.event.ActionListene
                 .contentEquals(Const.ASSERT)) {
             if (element.contentEquals(Const.TITLE)) {
                 //page title
-                if (stack.getClass().equals(ArrayList.class)) {
-                    //current page
-                    bd.verifyPage((String) value);
-                }
+                bd.verifyPage((String) value);
+            } else if (element.contentEquals(Const.COOKIE)) {
+                bd.verifyCookie((String) name, (String) value);
             } else {
                 //page element
                 bd.verify((WebElement) webElement, stack, element, (String) value);

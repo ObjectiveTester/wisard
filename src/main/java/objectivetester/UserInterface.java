@@ -11,6 +11,8 @@ interface UserInterface {
     void rescan();
 
     void abort();
+    
+    void finished();
 
     void addCode(String fragment);
 

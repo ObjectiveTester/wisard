@@ -20,10 +20,14 @@ interface Const {
     static final String PAGE = "page";
 
     static final String TITLE = "title";
+    
+    static final String BROWSER = "browser";
 
     static final String WINDOW = "other window";
 
     static final String CURRENT = "current focus";
+
+    static final String COOKIE = "cookie";
 
     //the style to 'highlight' an element
     static final String HIGHLIGHT = "'color: yellow; font-weight: bold; border: 2px dotted red;'";

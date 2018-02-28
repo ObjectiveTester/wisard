@@ -111,5 +111,13 @@ class ScriptWriter extends DefaultWriter {
                 + "        }"
                 + "", footer);
     }
-
+    
+    @Override
+    void writeVerifyCookie(String name, String value) {
+        ui.insertCode("\n        //verify:" + value + "\n"
+                + "        if (driver.manage().getCookieNamed(\"" + name + "\").getValue().contentEquals(\"" + value + "\")) {\n"
+                + "            System.out.println(\"" + name + " = " + value + "\");\n"
+                + "        }"
+                + "", footer);
+    }
 }

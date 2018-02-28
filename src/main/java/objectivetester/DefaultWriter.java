@@ -90,7 +90,13 @@ public class DefaultWriter {
                 + "        assertEquals(" + value + ", driver.getTitle());"
                 + "", footer);
     }
-
+    
+    void writeVerifyCookie(String name, String value) {
+                ui.insertCode("\n        //assert:" + value + "\n"
+                + "        assertEquals(\"" + value + "\", driver.manage().getCookieNamed(\"" + name + "\").getValue().toString());"
+                + "", footer);
+    }
+    
     void comment(String text) {
         ui.insertCode("\n    //" + text + "\n", footer);
     }

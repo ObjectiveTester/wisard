@@ -6,9 +6,11 @@ package objectivetester;
  */
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.InvalidSelectorException;
@@ -160,6 +162,7 @@ class BrowserDriver implements Runnable {
             driver.manage().timeouts().implicitlyWait(10, TimeUnit.MILLISECONDS);
             //examine the root contents
             examine(Const.PAGE);
+            ui.finished();
             safe = true;
         }
     }
@@ -183,6 +186,12 @@ class BrowserDriver implements Runnable {
                     }
                 }
                 driver.switchTo().window(current);
+
+                //get cookies
+                Set<Cookie> cookies = driver.manage().getCookies();
+                for (Cookie c : cookies) {
+                    ui.addItem(Const.COOKIE, Const.BROWSER, c.getName(), c.getDomain() + c.getPath(), c.getValue(), null, true);
+                }
 
             } else {
                 //drill down the frames stack
@@ -544,6 +553,12 @@ class BrowserDriver implements Runnable {
     void verifyPage(String expected) {
         writer.writeStart();
         writer.writeVerifyPage(expected);
+        writer.writeEnd();
+    }
+
+    void verifyCookie(String name, String expected) {
+        writer.writeStart();
+        writer.writeVerifyCookie(name, expected);
         writer.writeEnd();
     }
 

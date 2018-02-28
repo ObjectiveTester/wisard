@@ -1,5 +1,6 @@
 package objectivetester;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.event.ActionListener;
@@ -11,7 +12,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -897,6 +897,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
     @Override
     public void addItem(String element, Object stack, String name, String id, String value, Object webElement, Boolean displayed) {
         //adds content to the elements table
+        tableElements.setForeground(Color.LIGHT_GRAY);
         if ((!displayed) && (prefs.getBoolean("showInvis", false))) {
             element = Const.INVISIBLE + element;
             Object item = new Object[]{element, stack, name, id, value, webElement};
@@ -986,4 +987,10 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         }
         JOptionPane.showMessageDialog(new JFrame(), message.replace(". ", ". \n"), "Error", JOptionPane.INFORMATION_MESSAGE);
     }
+
+    @Override
+    public void finished() {
+        tableElements.setForeground(Color.BLACK);
+    }
+
 }
