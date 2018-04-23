@@ -81,7 +81,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="labelLink">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt; &lt;a href=&quot;https://github.com/objectivetester/wisard&quot;&gt;Wisard on github&lt;/a&gt;&lt;/html&gt;"/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt; &lt;a href=&quot;https://github.com/contexttesting/wisard&quot;&gt;Wisard on github&lt;/a&gt;&lt;/html&gt;"/>
                 <Property name="toolTipText" type="java.lang.String" value=""/>
               </Properties>
               <Events>
