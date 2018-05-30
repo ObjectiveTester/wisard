@@ -1,4 +1,4 @@
-package contexttesting;
+package objectivetester;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -234,7 +234,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         gridBagConstraints.gridy = 2;
         panelAbout.add(labelCopyright, gridBagConstraints);
 
-        labelLink.setText("<html> <a href=\"https://github.com/contexttesting/wisard\">Wisard on github</a></html>");
+        labelLink.setText("<html> <a href=\"https://github.com/objectivetester/wisard\">Wisard on github</a></html>");
         labelLink.setToolTipText("");
         labelLink.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
