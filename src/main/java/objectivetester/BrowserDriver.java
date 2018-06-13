@@ -45,6 +45,8 @@ class BrowserDriver implements Runnable {
     void initWriter(String selected) {
         if (selected.contains("junit")) {
             writer = new TestWriter(ui);
+        } else if (selected.contains("js")) {
+            writer = new JsWriter(ui);
         } else {
             writer = new ScriptWriter(ui);
         }
@@ -627,10 +629,10 @@ class BrowserDriver implements Runnable {
         //By.cssSelector - href
         //By.cssSelector - src
         //By.cssSelector - title
-        //By.cssSelector - value
         //By.className
         //By.cssSelector - class
         //By.cssSelector - type
+        //By.cssSelector - value
         List<WebElement> elements;
         String selector;
         String[] result = {null, null};
@@ -771,21 +773,8 @@ class BrowserDriver implements Runnable {
             }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
-
-        //value
-        try {
-            selector = "[value='" + webElement.getAttribute("value") + "']";
-            elements = driver.findElements(By.cssSelector(selector));
-            if ((elements.size() == 1) && elements.contains(webElement)) {
-                //System.out.println("found cssSelector:" + selector);
-                result[0] = "cssSelector";
-                result[1] = "[value='" + elements.get(0).getAttribute("value") + "']";
-                return result;
-            }
-        } catch (InvalidSelectorException | NullPointerException e) {
-        }
-
-        //classname
+        
+       //classname
         try {
             elements = driver.findElements(By.className(webElement.getAttribute("className")));
             if ((elements.size() == 1) && elements.contains(webElement)) {
@@ -803,7 +792,7 @@ class BrowserDriver implements Runnable {
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found cssSelector:" + selector);
                 result[0] = "cssSelector";
-                result[1] = elements.get(0).getAttribute("className").replace(" ", ".");
+                result[1] = "." + elements.get(0).getAttribute("className").replace(" ", ".");
                 return result;
             }
         } catch (InvalidSelectorException | NullPointerException e) {
@@ -830,6 +819,19 @@ class BrowserDriver implements Runnable {
                 //System.out.println("found cssSelector:" + selector);
                 result[0] = "cssSelector";
                 result[1] = "[type='" + elements.get(0).getAttribute("type") + "']";
+                return result;
+            }
+        } catch (InvalidSelectorException | NullPointerException e) {
+        }
+        
+        //value
+        try {
+            selector = "[value='" + webElement.getAttribute("value") + "']";
+            elements = driver.findElements(By.cssSelector(selector));
+            if ((elements.size() == 1) && elements.contains(webElement)) {
+                //System.out.println("found cssSelector:" + selector);
+                result[0] = "cssSelector";
+                result[1] = "[value='" + elements.get(0).getAttribute("value") + "']";
                 return result;
             }
         } catch (InvalidSelectorException | NullPointerException e) {

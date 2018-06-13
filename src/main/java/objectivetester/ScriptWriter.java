@@ -66,12 +66,10 @@ class ScriptWriter extends DefaultWriter {
                 + sysProp
                 + driverInit
                 + "        JavascriptExecutor js = (JavascriptExecutor) driver;\n"
-                + "        driver.manage().timeouts().pageLoadTimeout(300, TimeUnit.SECONDS);\n"
-                + "        driver.manage().timeouts().setScriptTimeout(300, TimeUnit.SECONDS);\n"
-                + "        driver.manage().timeouts().implicitlyWait(300, TimeUnit.SECONDS);\n"
-                + "        driver.get(\"" + url + "\");\n\n"
-                + "        //recorded actions//\n"
-                + "        //finish//\n\n"
+                + "        driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);\n"
+                + "        driver.manage().timeouts().setScriptTimeout(60, TimeUnit.SECONDS);\n"
+                + "        driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);\n"
+                + "        driver.get(\"" + url + "\");\n\n\n"
                 + "        driver.quit();\n"
                 + "    }\n"
                 + "    public static void switchWin(WebDriver driver, String title) {\n"
@@ -85,17 +83,20 @@ class ScriptWriter extends DefaultWriter {
                 + "        driver.switchTo().window(target);\n"
                 + "    }\n"
                 + "}\n");
-        footer = 17; //lines from the insert point to the bottom
+        footer = 16; //lines from the insert point to the bottom
     }
 
     @Override
     void writeVerifyElement(String value, String method) {
-        if (value != null) {
-            value = "\"" + value + "\"";
+        String check = ".contentEquals(\"" + value + "\")";
+        if (value == null) {
+            check = " == null";
+        } else {
+        
         }
         ui.insertCode("\n        //verify:" + value + "\n"
-                + "        if (element.getAttribute(\"" + method + "\").contentEquals(" + value + ")) {\n"
-                + "            System.out.println(\"" + method + "= \" +" + value + ");\n"
+                + "        if (element.getAttribute(\"" + method + "\")" + check + ") {\n"
+                + "            System.out.println(\"" + method + " = " + value + "\");\n"
                 + "        }"
                 + "", footer);
     }

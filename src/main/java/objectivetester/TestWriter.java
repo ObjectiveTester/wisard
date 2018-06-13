@@ -83,9 +83,9 @@ class TestWriter extends DefaultWriter {
                 + sysProp
                 + driverInit
                 + "        js = (JavascriptExecutor) driver;\n"
-                + "        driver.manage().timeouts().pageLoadTimeout(300, TimeUnit.SECONDS);\n"
-                + "        driver.manage().timeouts().setScriptTimeout(300, TimeUnit.SECONDS);\n"
-                + "        driver.manage().timeouts().implicitlyWait(300, TimeUnit.SECONDS);\n"
+                + "        driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);\n"
+                + "        driver.manage().timeouts().setScriptTimeout(60, TimeUnit.SECONDS);\n"
+                + "        driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);\n"
                 + "        driver.get(\"" + url + "\");\n"
                 + "    }\n\n"
                 + "    @AfterClass\n"
