@@ -4,13 +4,13 @@
     <name>Wisard</name>
     <groupId>objectivetester</groupId>
     <artifactId>Wisard</artifactId>
-    <version>1.1</version>
+    <version>1.5</version>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>3.12.0</version>
+            <version>4.0.0-alpha-1</version>
         </dependency>
     </dependencies>
     <properties>

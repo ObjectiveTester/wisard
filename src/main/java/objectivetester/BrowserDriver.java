@@ -43,12 +43,19 @@ class BrowserDriver implements Runnable {
     }
 
     void initWriter(String selected) {
-        if (selected.contains("junit")) {
-            writer = new TestWriter(ui);
-        } else if (selected.contains("js")) {
-            writer = new JsWriter(ui);
-        } else {
-            writer = new ScriptWriter(ui);
+        switch (selected) {
+            case "junit":
+                writer = new TestWriter(ui);
+                break;
+            case "junit5":
+                writer = new Test5Writer(ui);
+                break;
+            case "js":
+                writer = new JsWriter(ui);
+                break;
+            default:
+                writer = new ScriptWriter(ui);
+                break;
         }
     }
 
@@ -156,7 +163,7 @@ class BrowserDriver implements Runnable {
         }
         return true;
     }
-
+    
     @Override
     public void run() {
         if (driver != null) {
@@ -773,8 +780,8 @@ class BrowserDriver implements Runnable {
             }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
-        
-       //classname
+
+        //classname
         try {
             elements = driver.findElements(By.className(webElement.getAttribute("className")));
             if ((elements.size() == 1) && elements.contains(webElement)) {
@@ -823,7 +830,7 @@ class BrowserDriver implements Runnable {
             }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
-        
+
         //value
         try {
             selector = "[value='" + webElement.getAttribute("value") + "']";
