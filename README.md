@@ -18,9 +18,9 @@ Build a package from the command line with:
 Running Wisard
 ==============
 
-Once built, either double-click 'Wisard-1.1.jar' or start from the command line with:
+Once built, either double-click 'Wisard-1.5.jar' or start from the command line with:
 
-    java -jar Wisard-1.1.jar
+    java -jar target/Wisard-1.5.jar
     
 
 Then enter a web URL and click the find icon
