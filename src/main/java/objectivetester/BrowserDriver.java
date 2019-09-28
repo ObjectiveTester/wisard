@@ -872,7 +872,7 @@ class BrowserDriver implements Runnable {
             try {
                 selector = "div[" + customTag + "='" + webElement.getAttribute(customTag) + "'";
                 elements = driver.findElements(By.cssSelector(selector));
-                System.out.println("len:" + elements.size());
+                //System.out.println("len:" + elements.size());
                 if ((elements.size() == 1) && elements.contains(webElement)) {
                     //System.out.println("found div:" + selector);
                     result[0] = "cssSelector";
