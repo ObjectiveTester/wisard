@@ -131,7 +131,7 @@ class EventListener extends MouseAdapter implements java.awt.event.ActionListene
         Object webElement = table.getModel().getValueAt(current, Const.TAB_WEBELEMENT);
         //clicking on an element
         if (e.getActionCommand().contentEquals(Const.CLICK)) {
-            if (element.contentEquals("link") || element.contentEquals("image") || element.contentEquals("anchor") || element.endsWith(":radio") || element.endsWith(":checkbox") || element.endsWith(":submit") || element.endsWith(":button") || element.endsWith(":reset")) {
+            if (element.contentEquals("link") || element.contentEquals("image") || element.contentEquals("anchor") || element.contentEquals("div") ||element.endsWith(":radio") || element.endsWith(":checkbox") || element.endsWith(":submit") || element.endsWith(":button") || element.endsWith(":reset")) {
                 //clickable
                 bd.click((WebElement) webElement, stack);
             } else if (element.endsWith(":select-one")) {
