@@ -114,6 +114,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         pathED.setText(prefs.get("driverED", ""));
         defaultURL.setText(prefs.get("defaultURL", ""));
         currentUrl.setText(prefs.get("defaultURL", ""));
+        customTags.setText(prefs.get("divtags", ""));
         if (prefs.get("browser", "").contentEquals("FF")) {
             buttonFF.setSelected(true);
         }
@@ -192,6 +193,8 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         buttonSave = new javax.swing.JButton();
         buttonCancel = new javax.swing.JButton();
         pathED = new javax.swing.JTextField();
+        labelDIVtags = new javax.swing.JLabel();
+        customTags = new javax.swing.JTextField();
         jToolBar1 = new javax.swing.JToolBar();
         labelUrl = new javax.swing.JLabel();
         currentUrl = new javax.swing.JTextField();
@@ -317,7 +320,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         labelDispopts.setText("Display Options");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
         panelSettings.add(labelDispopts, gridBagConstraints);
@@ -326,7 +329,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         checkBoxId.setToolTipText("Show Element 'id'");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         panelSettings.add(checkBoxId, gridBagConstraints);
         checkBoxId.getAccessibleContext().setAccessibleDescription("Show id");
@@ -335,7 +338,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         checkBoxInvis.setToolTipText("List invisible Elements");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         panelSettings.add(checkBoxInvis, gridBagConstraints);
         checkBoxInvis.getAccessibleContext().setAccessibleDescription("List Invisible");
@@ -344,7 +347,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         labelOutput.setText("Generated Output");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
         panelSettings.add(labelOutput, gridBagConstraints);
@@ -353,7 +356,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         buttonJunit.setText("JUnit");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         panelSettings.add(buttonJunit, gridBagConstraints);
 
@@ -361,7 +364,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         buttonJunit5.setText("JUnit5");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         panelSettings.add(buttonJunit5, gridBagConstraints);
 
@@ -369,7 +372,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         buttonJava.setText("Java");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 9;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         panelSettings.add(buttonJava, gridBagConstraints);
 
@@ -377,7 +380,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         buttonJs.setText("JavaScript");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         panelSettings.add(buttonJs, gridBagConstraints);
 
@@ -385,7 +388,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         labelDriver.setText("Target Browser and driver");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridy = 11;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 20);
         panelSettings.add(labelDriver, gridBagConstraints);
@@ -394,7 +397,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         buttonFF.setText("Firefox");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 11;
+        gridBagConstraints.gridy = 12;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         panelSettings.add(buttonFF, gridBagConstraints);
 
@@ -402,7 +405,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         buttonCR.setText("Chrome");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 13;
+        gridBagConstraints.gridy = 14;
         gridBagConstraints.gridheight = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         panelSettings.add(buttonCR, gridBagConstraints);
@@ -412,7 +415,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         buttonIE.setToolTipText("Internet Explorer");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 15;
+        gridBagConstraints.gridy = 16;
         gridBagConstraints.gridheight = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         panelSettings.add(buttonIE, gridBagConstraints);
@@ -422,7 +425,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         buttonED.setText("Edge");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 17;
+        gridBagConstraints.gridy = 18;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         panelSettings.add(buttonED, gridBagConstraints);
 
@@ -430,7 +433,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         buttonSA.setText("Safari");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 19;
+        gridBagConstraints.gridy = 20;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         panelSettings.add(buttonSA, gridBagConstraints);
 
@@ -440,7 +443,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         pathFF.setName(""); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 11;
+        gridBagConstraints.gridy = 12;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 100;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -451,7 +454,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         pathCR.setToolTipText("Path to Chrome driver");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 13;
+        gridBagConstraints.gridy = 14;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 100;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -463,7 +466,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         pathIE.setToolTipText("Path to IE driver");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 15;
+        gridBagConstraints.gridy = 16;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 100;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -474,7 +477,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         labelPlugin.setText("/usr/bin/safaridriver");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 19;
+        gridBagConstraints.gridy = 20;
         panelSettings.add(labelPlugin, gridBagConstraints);
 
         buttonSave.setText("Save");
@@ -485,7 +488,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 20;
+        gridBagConstraints.gridy = 22;
         gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
         panelSettings.add(buttonSave, gridBagConstraints);
 
@@ -497,7 +500,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 20;
+        gridBagConstraints.gridy = 22;
         gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
         panelSettings.add(buttonCancel, gridBagConstraints);
 
@@ -506,11 +509,31 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         pathED.setToolTipText("Path to Edge driver");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 17;
+        gridBagConstraints.gridy = 18;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 100;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         panelSettings.add(pathED, gridBagConstraints);
+
+        labelDIVtags.setText("DIV tag selectors");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 20);
+        panelSettings.add(labelDIVtags, gridBagConstraints);
+
+        customTags.setColumns(20);
+        customTags.setText("customTags");
+        customTags.setToolTipText("comma seperated list of DIV tags");
+        customTags.setMinimumSize(new java.awt.Dimension(166, 24));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.ipadx = 100;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
+        panelSettings.add(customTags, gridBagConstraints);
 
         javax.swing.GroupLayout dialogSettingsLayout = new javax.swing.GroupLayout(dialogSettings.getContentPane());
         dialogSettings.getContentPane().setLayout(dialogSettingsLayout);
@@ -524,7 +547,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
             dialogSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 450, Short.MAX_VALUE)
             .addGroup(dialogSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(panelSettings, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE))
+                .addComponent(panelSettings, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 450, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -679,7 +702,8 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
 
         //save new settings
         prefs.put("defaultURL", defaultURL.getText());
-
+        prefs.put("divtags", customTags.getText());
+            
         prefs.putBoolean("showId", checkBoxId.isSelected());
         prefs.putBoolean("showInvis", checkBoxInvis.isSelected());
 
@@ -883,12 +907,14 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
     private javax.swing.JCheckBox checkBoxInvis;
     private javax.swing.JTextArea code;
     private javax.swing.JTextField currentUrl;
+    private javax.swing.JTextField customTags;
     private javax.swing.JTextField defaultURL;
     private javax.swing.JDialog dialogAbout;
     private javax.swing.JDialog dialogSettings;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel labelCopyright;
+    private javax.swing.JLabel labelDIVtags;
     private javax.swing.JLabel labelDefurl;
     private javax.swing.JLabel labelDesc;
     private javax.swing.JLabel labelDispopts;
@@ -1022,6 +1048,11 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
     @Override
     public void finished() {
         tableElements.setForeground(Color.BLACK);
+    }
+
+    @Override
+    public String getCustomTags() {
+        return prefs.get("divtags", "");
     }
 
 }

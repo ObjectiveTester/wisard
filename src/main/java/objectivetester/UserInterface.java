@@ -27,5 +27,7 @@ interface UserInterface {
     void elementIdent(String message);
 
     void errorMessage(String message);
+    
+    String getCustomTags();
 
 }

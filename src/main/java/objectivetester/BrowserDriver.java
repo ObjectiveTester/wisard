@@ -5,6 +5,7 @@ package objectivetester;
  * @author Steve
  */
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +38,7 @@ class BrowserDriver implements Runnable {
     UserInterface ui;
     DefaultWriter writer;
     boolean safe = false;
+    ArrayList<String> customTags;
 
     BrowserDriver(UserInterface ui) {
         this.ui = ui;
@@ -163,11 +165,16 @@ class BrowserDriver implements Runnable {
         }
         return true;
     }
-    
+
     @Override
     public void run() {
         if (driver != null) {
             safe = false;
+
+            //get list of custom tags to search for
+            String[] tags = ui.getCustomTags().split("\\s*,\\s*");
+            customTags = new ArrayList<>(Arrays.asList(tags));
+
             driver.manage().timeouts().implicitlyWait(10, TimeUnit.MILLISECONDS);
             //examine the root contents
             examine(Const.PAGE);
@@ -295,6 +302,20 @@ class BrowserDriver implements Runnable {
                 }
             } catch (Exception e) {
                 //ui.errorMessage("Failed to find anchors");
+            }
+
+            //custom - div tag
+            for (String customTag : customTags) {
+                try {
+                    //custom  "div[<tag>]"
+                    List<WebElement> custom = (List<WebElement>) driver.findElements(By.cssSelector("div[" + customTag + "]"));
+                    for (WebElement element : custom) {
+                        //element.getTagName()
+                        ui.addItem(element.getTagName().toLowerCase(), stack, element.getText().strip(), customTag, element.getAttribute(customTag), element, element.isDisplayed());
+                    }
+                } catch (Exception e) {
+                    //ui.errorMessage("Failed to find custom");
+                }
             }
             boolean validFrame = true;
             int frame = 0;
@@ -656,12 +677,14 @@ class BrowserDriver implements Runnable {
         }
 
         //name
-        elements = driver.findElements(By.name(webElement.getAttribute("name")));
-        if ((elements.size() == 1) && elements.contains(webElement)) {
-            //System.out.println("found frames:" + elements.get(0).getAttribute("frames"));
-            result[0] = "name";
-            result[1] = elements.get(0).getAttribute("name");
-            return result;
+        if (webElement.getAttribute("name") != null) {
+            elements = driver.findElements(By.name(webElement.getAttribute("name")));
+            if ((elements.size() == 1) && elements.contains(webElement)) {
+                //System.out.println("found frames:" + elements.get(0).getAttribute("frames"));
+                result[0] = "name";
+                result[1] = elements.get(0).getAttribute("name");
+                return result;
+            }
         }
 
         //id
@@ -844,6 +867,22 @@ class BrowserDriver implements Runnable {
         } catch (InvalidSelectorException | NullPointerException e) {
         }
 
+        //custom - div tag
+        for (String customTag : customTags) {
+            try {
+                selector = "div[" + customTag + "='" + webElement.getAttribute(customTag) + "'";
+                elements = driver.findElements(By.cssSelector(selector));
+                System.out.println("len:" + elements.size());
+                if ((elements.size() == 1) && elements.contains(webElement)) {
+                    //System.out.println("found div:" + selector);
+                    result[0] = "cssSelector";
+                    result[1] = "div[" + customTag + "=\"" + elements.get(0).getAttribute(customTag) + "\"";
+                    return result;
+                }
+            } catch (InvalidSelectorException | NullPointerException e) {
+            }
+        }
+        
         //implement other methods?
         return result;
     }
