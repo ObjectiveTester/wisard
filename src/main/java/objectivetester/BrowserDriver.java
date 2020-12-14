@@ -305,18 +305,21 @@ class BrowserDriver implements Runnable {
             }
 
             //custom - div tag
-            for (String customTag : customTags) {
-                try {
-                    //custom  "div[<tag>]"
-                    List<WebElement> custom = (List<WebElement>) driver.findElements(By.cssSelector("div[" + customTag + "]"));
-                    for (WebElement element : custom) {
-                        //element.getTagName()
-                        ui.addItem(element.getTagName().toLowerCase(), stack, element.getText().strip(), customTag, element.getAttribute(customTag), element, element.isDisplayed());
+            if (customTags.get(0).length() != 0) {
+                for (String customTag : customTags) {
+                    try {
+                        //custom  "div[<tag>]"
+                        List<WebElement> custom = (List<WebElement>) driver.findElements(By.cssSelector("div[" + customTag + "]"));
+                        for (WebElement element : custom) {
+                            //element.getTagName()
+                            ui.addItem(element.getTagName().toLowerCase(), stack, element.getText().strip(), customTag, element.getAttribute(customTag), element, element.isDisplayed());
+                        }
+                    } catch (Exception e) {
+                        //ui.errorMessage("Failed to find custom");
                     }
-                } catch (Exception e) {
-                    //ui.errorMessage("Failed to find custom");
                 }
             }
+ 
             boolean validFrame = true;
             int frame = 0;
             while (validFrame) {
@@ -379,6 +382,7 @@ class BrowserDriver implements Runnable {
             if (stack.getClass().equals(ArrayList.class)) {
                 traverse((ArrayList) stack, false);
             }
+            js.executeScript("arguments[0].scrollIntoView(true);", webElement);
             String style = webElement.getAttribute("style");
             //System.out.println(webElement + style);
             js.executeScript("arguments[0].setAttribute('style', " + Const.HIGHLIGHT + ");", webElement);
@@ -398,6 +402,7 @@ class BrowserDriver implements Runnable {
         if (stack.getClass().equals(ArrayList.class)) {
             traverse((ArrayList) stack, false);
         }
+        js.executeScript("arguments[0].scrollIntoView(true);", webElement);
         String name = webElement.getText();
         String method[] = elementFinder(webElement);
         driver.switchTo().defaultContent();
@@ -812,7 +817,7 @@ class BrowserDriver implements Runnable {
                 result[0] = "className";
                 result[1] = elements.get(0).getAttribute("className");
                 return result;
-            }
+            } 
         } catch (InvalidSelectorException | NullPointerException e) {
         }
 
@@ -850,7 +855,7 @@ class BrowserDriver implements Runnable {
                 result[0] = "cssSelector";
                 result[1] = "[type='" + elements.get(0).getAttribute("type") + "']";
                 return result;
-            }
+            } 
         } catch (InvalidSelectorException | NullPointerException e) {
         }
 
@@ -882,7 +887,7 @@ class BrowserDriver implements Runnable {
             } catch (InvalidSelectorException | NullPointerException e) {
             }
         }
-        
+
         //implement other methods?
         return result;
     }
