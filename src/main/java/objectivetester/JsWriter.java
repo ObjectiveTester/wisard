@@ -20,9 +20,11 @@ class JsWriter extends DefaultWriter {
         ui.addCode("var assert = require('assert');\n\n"
                 + "describe('webdriver.io test suite', function() {\n\n"
                 + "    before(function() {\n"
-                //+ "        browser.timeouts('pageLoad', 60000);\n"
-                + "        browser.timeouts('script', 60000);\n"
-                + "        browser.timeouts('implicit', 60000);\n"
+                + "        browser.setTimeout({\n"
+                + "            'implicit', 60000);\n"
+                + "            'pageLoad', 60000);\n"
+                + "            'script', 60000);\n"
+                + "        });\n\n"
                 + "        browser.url('" + url + "');\n"
                 + "    });\n\n"
                 + "    after(function() {\n"
@@ -35,14 +37,14 @@ class JsWriter extends DefaultWriter {
     @Override
     void writeFindEvent(String method, String attribute) {
         ui.insertCode("\n        //find:" + attribute + "\n"
-                + "        var element = browser.element('" + wdioMethod(method, attribute) + "');"
+                + "        const element = $('" + wdioMethod(method, attribute) + "');"
                 + "", footer);
     }
 
     @Override
     void writeClickEvent(String method, String attribute) {
         ui.insertCode("\n        //click:" + attribute + "\n"
-                + "        browser.click('" + wdioMethod(method, attribute) + "');"
+                + "        $('" + wdioMethod(method, attribute) + "').click();"
                 + "", footer);
     }
 
@@ -60,7 +62,7 @@ class JsWriter extends DefaultWriter {
 
     @Override
     void writeInputjsEvent(String jsInput) {
-        ui.insertCode("\n        browser.execute(\"" + jsInput + "\");"
+        ui.insertCode("\n        browser.executeScript(\"" + jsInput + "\");"
                 + "", footer);
     }
 
@@ -68,9 +70,9 @@ class JsWriter extends DefaultWriter {
     void writeAlertClick(String question, boolean choice) {
         String action;
         if (choice) {
-            action = "        browser.alertAccept();\n";
+            action = "        browser.acceptAlert();\n";
         } else {
-            action = "        browser.alertDismiss();\n";
+            action = "        browser.dismissAlert();\n";
         }
         ui.insertCode("\n        //alert:" + question + "\n"
                 + action
@@ -80,21 +82,21 @@ class JsWriter extends DefaultWriter {
     @Override
     void writeSwitchByIndex(int frame) {
         ui.insertCode("\n        //switch to:" + frame + "\n"
-                + "        browser.frame(" + frame + ");"
+                + "        browser.switchToFrame(" + frame + ");"
                 + "", footer);
     }
 
     @Override
     void writeSwitchBack() {
         ui.insertCode("\n        //switch back\n"
-                + "        browser.frameParent();"
+                + "        browser.switchToParentFrame();"
                 + "", footer);
     }
 
     @Override
     void writeSwitchWin(String title) {
         ui.insertCode("\n        //switch to:" + title + "\n"
-                + "        browser.window('" + title + "');"
+                + "        browser.switchWindow('" + title + "');"
                 + "", footer);
     }
 
@@ -121,7 +123,7 @@ class JsWriter extends DefaultWriter {
     @Override
     void writeVerifyCookie(String name, String value) {
         ui.insertCode("\n        //assert:" + value + "\n"
-                + "        assert.equal(browser.getCookie('" + name + "').value, '" + value.replaceAll("\"", "'") + "');"
+                + "        assert.equal(browser.getNamedCookie('" + name + "').value, '" + value.replaceAll("\"", "'") + "');"
                 + "", footer);
     }
 
