@@ -4,11 +4,11 @@ package objectivetester;
  *
  * @author Steve
  */
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -175,7 +175,7 @@ class BrowserDriver implements Runnable {
             String[] tags = ui.getCustomTags().split("\\s*,\\s*");
             customTags = new ArrayList<>(Arrays.asList(tags));
 
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.MILLISECONDS);
+            driver.manage().timeouts().implicitlyWait(Duration.ofMillis(10));
             //examine the root contents
             examine(Const.PAGE);
             ui.finished();
@@ -319,7 +319,7 @@ class BrowserDriver implements Runnable {
                     }
                 }
             }
- 
+
             boolean validFrame = true;
             int frame = 0;
             while (validFrame) {
@@ -446,7 +446,12 @@ class BrowserDriver implements Runnable {
         String method[] = elementFind(webElement, stack, Const.CLICK);
         if (method[0] != null) {
             writer.writeClickEvent(method[0], method[1]);
-            webElement.click();
+            if (driver.getClass().getName().contains("SafariDriver")) {
+                //workaround for a click problem with Safari that only happens in Wisard
+                js.executeScript("arguments[0].click();", webElement);
+            } else {
+                webElement.click();
+            }
 
             //if that caused an alert to popup, deal with it
             //prompting alerts are not dealt with yet, but are supported in webdriver
@@ -817,7 +822,7 @@ class BrowserDriver implements Runnable {
                 result[0] = "className";
                 result[1] = elements.get(0).getAttribute("className");
                 return result;
-            } 
+            }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
 
@@ -855,7 +860,7 @@ class BrowserDriver implements Runnable {
                 result[0] = "cssSelector";
                 result[1] = "[type='" + elements.get(0).getAttribute("type") + "']";
                 return result;
-            } 
+            }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
 

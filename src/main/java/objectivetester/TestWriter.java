@@ -53,7 +53,7 @@ class TestWriter extends DefaultWriter {
                 break;
         }
 
-        ui.addCode("import java.util.concurrent.TimeUnit;\n"
+        ui.addCode("import java.time.Duration;;\n"
                 + driverImport
                 + "import org.openqa.selenium.JavascriptExecutor;\n"
                 + "import org.openqa.selenium.WebDriver;\n"
@@ -83,9 +83,9 @@ class TestWriter extends DefaultWriter {
                 + sysProp
                 + driverInit
                 + "        js = (JavascriptExecutor) driver;\n"
-                + "        driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);\n"
-                + "        driver.manage().timeouts().setScriptTimeout(60, TimeUnit.SECONDS);\n"
-                + "        driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);\n"
+                + "        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));\n"
+                + "        driver.manage().timeouts().setScriptTimeout(Duration.ofSeconds(10));\n"
+                + "        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));\n"
                 + "        driver.get(\"" + url + "\");\n"
                 + "    }\n\n"
                 + "    @AfterClass\n"
