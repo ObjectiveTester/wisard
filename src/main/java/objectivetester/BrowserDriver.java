@@ -289,8 +289,7 @@ class BrowserDriver implements Runnable {
                         //custom  "div[<tag>]"
                         List<WebElement> custom = (List<WebElement>) driver.findElements(By.cssSelector("div[" + customTag + "]"));
                         for (WebElement element : custom) {
-                            //element.getTagName()
-                            ui.addItem(element.getTagName().toLowerCase(), stack, element.getText().strip(), customTag, element.getAttribute(customTag), element, element.isDisplayed());
+                            ui.addItem(element.getTagName().toLowerCase(), stack, element.getTagName(), customTag, element.getText().strip(), element, element.isDisplayed());
                         }
                     } catch (Exception e) {
                         //ui.errorMessage("Failed to find custom");
@@ -551,6 +550,8 @@ class BrowserDriver implements Runnable {
                 verifymethod = "name";
             } else if (element.contains("radio") || element.contains("checkbox")) {
                 verifymethod = "checked";
+            } else if (element.contains("div")) {
+                verifymethod = "gettext";
             } else {
                 verifymethod = "value";
             }

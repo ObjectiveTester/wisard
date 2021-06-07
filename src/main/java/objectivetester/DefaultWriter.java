@@ -54,7 +54,7 @@ public class DefaultWriter {
                 + action
                 + "", footer);
     }
-    
+
     void writeSwitchByIndex(int frame) {
         ui.insertCode("\n        //switch to:" + frame + "\n"
                 + "        driver.switchTo().frame(" + frame + ");"
@@ -77,8 +77,17 @@ public class DefaultWriter {
         if (value != null) {
             value = "\"" + value + "\"";
         }
+
+        String line;
+        switch (method) {
+            case "gettext":
+                line = "        assertEquals(" + value + ",element.getText());";
+                break;
+            default:
+                line = "        assertEquals(" + value + ",element.getAttribute(\"" + method + "\"))";
+        }
         ui.insertCode("\n        //assert:" + value + "\n"
-                + "        assertEquals(" + value + ",element.getAttribute(\"" + method + "\"));"
+                + line
                 + "", footer);
     }
 
@@ -90,13 +99,13 @@ public class DefaultWriter {
                 + "        assertEquals(" + value + ", driver.getTitle());"
                 + "", footer);
     }
-    
+
     void writeVerifyCookie(String name, String value) {
-                ui.insertCode("\n        //assert:" + value + "\n"
+        ui.insertCode("\n        //assert:" + value + "\n"
                 + "        assertEquals(\"" + value + "\", driver.manage().getCookieNamed(\"" + name + "\").getValue().toString());"
                 + "", footer);
     }
-    
+
     void comment(String text) {
         ui.insertCode("\n    //" + text + "\n", footer);
     }
