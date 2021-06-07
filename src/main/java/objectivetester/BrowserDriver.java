@@ -27,7 +27,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.*;
 
@@ -98,27 +97,6 @@ class BrowserDriver implements Runnable {
             return false;
         } catch (InvalidArgumentException iae) {
             System.err.println(iae);
-            ui.errorMessage("Invalid URL?");
-            return false;
-        } catch (Exception e) {
-            System.err.println(e);
-            return false;
-        }
-        return true;
-    }
-
-    boolean initIE(String url, String path) {
-        //IE
-        try {
-            System.setProperty("webdriver.ie.driver", path);
-            driver = new InternetExplorerDriver();
-            js = (JavascriptExecutor) driver;
-            writer.writeHeader(url, "IE");
-            driver.get(url);
-        } catch (IllegalStateException ise) {
-            ui.errorMessage("Path to IE driver is invalid, check settings.");
-            return false;
-        } catch (InvalidArgumentException iae) {
             ui.errorMessage("Invalid URL?");
             return false;
         } catch (Exception e) {

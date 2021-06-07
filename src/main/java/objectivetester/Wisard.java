@@ -102,27 +102,22 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
             prefs.put("output", "junit");
             prefs.put("driverFF", "./geckodriver.exe");
             prefs.put("driverCR", "./chromedriver.exe");
-            prefs.put("driverIE", "./IEDriverServer.exe");
             prefs.put("driverED", "./MicrosoftWebDriver.exe");
             prefs.putBoolean("showId", false);
             prefs.putBoolean("showInvis", false);
-            prefs.put("defaultURL", "http://www.google.com");
+            prefs.put("defaultURL", "http://www.saucedemo.com");
         }
         pathFF.setText(prefs.get("driverFF", ""));
         pathCR.setText(prefs.get("driverCR", ""));
-        pathIE.setText(prefs.get("driverIE", ""));
         pathED.setText(prefs.get("driverED", ""));
         defaultURL.setText(prefs.get("defaultURL", ""));
         currentUrl.setText(prefs.get("defaultURL", ""));
-        customTags.setText(prefs.get("divtags", ""));
+        customTags.setText(prefs.get("divtags", "id=shopping_cart_container, class=cart_quantity"));
         if (prefs.get("browser", "").contentEquals("FF")) {
             buttonFF.setSelected(true);
         }
         if (prefs.get("browser", "").contentEquals("CR")) {
             buttonCR.setSelected(true);
-        }
-        if (prefs.get("browser", "").contentEquals("IE")) {
-            buttonIE.setSelected(true);
         }
         if (prefs.get("browser", "").contentEquals("ED")) {
             buttonED.setSelected(true);
@@ -183,12 +178,10 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         labelDriver = new javax.swing.JLabel();
         buttonFF = new javax.swing.JRadioButton();
         buttonCR = new javax.swing.JRadioButton();
-        buttonIE = new javax.swing.JRadioButton();
         buttonED = new javax.swing.JRadioButton();
         buttonSA = new javax.swing.JRadioButton();
         pathFF = new javax.swing.JTextField();
         pathCR = new javax.swing.JTextField();
-        pathIE = new javax.swing.JTextField();
         labelPlugin = new javax.swing.JLabel();
         buttonSave = new javax.swing.JButton();
         buttonCancel = new javax.swing.JButton();
@@ -238,7 +231,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         gridBagConstraints.gridy = 1;
         panelAbout.add(labelDesc, gridBagConstraints);
 
-        labelCopyright.setText("© Steve Mellor 2014-2019");
+        labelCopyright.setText("© Steve Mellor 2014-2021");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -410,17 +403,6 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         panelSettings.add(buttonCR, gridBagConstraints);
 
-        buttonsBrowser.add(buttonIE);
-        buttonIE.setText("Internet Explorer");
-        buttonIE.setToolTipText("Internet Explorer");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 16;
-        gridBagConstraints.gridheight = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        panelSettings.add(buttonIE, gridBagConstraints);
-        buttonIE.getAccessibleContext().setAccessibleDescription("IE");
-
         buttonsBrowser.add(buttonED);
         buttonED.setText("Edge");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -460,18 +442,6 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         panelSettings.add(pathCR, gridBagConstraints);
         pathCR.getAccessibleContext().setAccessibleName("Chrome driver");
-
-        pathIE.setColumns(20);
-        pathIE.setText("pathIE");
-        pathIE.setToolTipText("Path to IE driver");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 16;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 100;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        panelSettings.add(pathIE, gridBagConstraints);
-        pathIE.getAccessibleContext().setAccessibleName("IE driver");
 
         labelPlugin.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
         labelPlugin.setText("/usr/bin/safaridriver");
@@ -547,7 +517,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
             dialogSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 450, Short.MAX_VALUE)
             .addGroup(dialogSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(panelSettings, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 450, Short.MAX_VALUE))
+                .addComponent(panelSettings, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -710,9 +680,6 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         if (buttonFF.isSelected()) {
             prefs.put("browser", "FF");
         }
-        if (buttonIE.isSelected()) {
-            prefs.put("browser", "IE");
-        }
         if (buttonED.isSelected()) {
             prefs.put("browser", "ED");
         }
@@ -737,7 +704,6 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
 
         prefs.put("driverFF", pathFF.getText());
         prefs.put("driverCR", pathCR.getText());
-        prefs.put("driverIE", pathIE.getText());
         prefs.put("driverED", pathED.getText());
 
         dialogSettings.setVisible(false);
@@ -755,9 +721,6 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
             }
             if (prefs.get("browser", "").contentEquals("CR")) {
                 success = bd.initCR(currentUrl.getText(), prefs.get("driverCR", ""));
-            }
-            if (prefs.get("browser", "").contentEquals("IE")) {
-                success = bd.initIE(currentUrl.getText(), prefs.get("driverIE", ""));
             }
             if (prefs.get("browser", "").contentEquals("ED")) {
                 success = bd.initED(currentUrl.getText(), prefs.get("driverED", ""));
@@ -841,9 +804,6 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         if (prefs.get("browser", "").contentEquals("CR")) {
             buttonCR.setSelected(true);
         }
-        if (prefs.get("browser", "").contentEquals("IE")) {
-            buttonIE.setSelected(true);
-        }
         if (prefs.get("browser", "").contentEquals("ED")) {
             buttonED.setSelected(true);
         }
@@ -853,7 +813,6 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
 
         pathFF.setText(prefs.get("driverFF", ""));
         pathCR.setText(prefs.get("driverCR", ""));
-        pathIE.setText(prefs.get("driverIE", ""));
         pathED.setText(prefs.get("driverED", ""));
 
         dialogSettings.setVisible(false);
@@ -892,7 +851,6 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
     private javax.swing.JButton buttonCool;
     private javax.swing.JRadioButton buttonED;
     private javax.swing.JRadioButton buttonFF;
-    private javax.swing.JRadioButton buttonIE;
     private javax.swing.JToggleButton buttonInspect;
     private javax.swing.JRadioButton buttonJava;
     private javax.swing.JRadioButton buttonJs;
@@ -940,7 +898,6 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
     private javax.swing.JTextField pathCR;
     private javax.swing.JTextField pathED;
     private javax.swing.JTextField pathFF;
-    private javax.swing.JTextField pathIE;
     private javax.swing.JTable tableElements;
     private javax.swing.JTextArea textConsole;
     // End of variables declaration//GEN-END:variables

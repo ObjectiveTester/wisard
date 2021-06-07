@@ -35,12 +35,6 @@ class Test5Writer extends DefaultWriter {
                 driverInit = "        driver = new ChromeDriver();\n";
                 break;
 
-            case "IE":
-                driverImport = "import org.openqa.selenium.ie.InternetExplorerDriver;\n";
-                sysProp = "        System.setProperty(\"webdriver.ie.driver\", \"" + System.getProperty("webdriver.ie.driver") + "\");\n";
-                driverInit = "        driver = new InternetExplorerDriver();\n";
-                break;
-
             case "ED":
                 driverImport = "import org.openqa.selenium.edge.EdgeDriver;\n";
                 sysProp = "        System.setProperty(\"webdriver.edge.driver\", \"" + System.getProperty("webdriver.edge.driver") + "\");\n";
