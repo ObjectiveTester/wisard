@@ -6,7 +6,7 @@ package objectivetester;
  */
 class JsWriter extends DefaultWriter {
     //browsermodel calls this and it updates the generated code
-    //Webdriver.io + Mocha
+    //Webdriver.io v4
 
     private int n = 0;
 
@@ -17,19 +17,17 @@ class JsWriter extends DefaultWriter {
 
     @Override
     void writeHeader(String url, String browser) {
-        ui.addCode("var assert = require('assert');\n\n"
-                + "describe('webdriver.io test suite', function() {\n\n"
-                + "    before(function() {\n"
-                + "        browser.setTimeout({\n"
-                + "            'implicit', 60000);\n"
-                + "            'pageLoad', 60000);\n"
-                + "            'script', 60000);\n"
-                + "        });\n\n"
-                + "        browser.url('" + url + "');\n"
-                + "    });\n\n"
-                + "    after(function() {\n"
-                + "    });\n\n"
-                + "});\n");
+        ui.addCode("describe('webdriver.io v4 test suite', () => {\n\n"
+                + "    before(async () => {\n"
+                + "        browser.setTimeout(\n"
+                + "            { 'implicit': 60000 },\n"
+                + "            { 'pageLoad': 60000 },\n"
+                + "            { 'script': 60000 })\n"
+                + "        await browser.url('" + url + "')\n"
+                + "    })\n\n"
+                + "    after(async () => {\n"
+                + "    })\n\n"
+                + "})\n");
         footer = 3; //lines from the insert point to the bottom
 
     }
@@ -37,32 +35,32 @@ class JsWriter extends DefaultWriter {
     @Override
     void writeFindEvent(String method, String attribute) {
         ui.insertCode("\n        //find:" + attribute + "\n"
-                + "        const element = $('" + wdioMethod(method, attribute) + "');"
+                + "        const element = await $('" + wdioMethod(method, attribute) + "')"
                 + "", footer);
     }
 
     @Override
     void writeClickEvent(String method, String attribute) {
         ui.insertCode("\n        //click:" + attribute + "\n"
-                + "        $('" + wdioMethod(method, attribute) + "').click();"
+                + "        await (await $('" + wdioMethod(method, attribute) + "')).click()"
                 + "", footer);
     }
 
     @Override
     void writeInputEvent(String data) {
-        ui.insertCode("\n        element.setValue('" + data + "');"
+        ui.insertCode("\n        element.setValue('" + data + "')"
                 + "", footer);
     }
 
     @Override
     void writeSelectEvent(String data) {
-        ui.insertCode("\n        element.selectByVisibleText(\"" + data + "\");"
+        ui.insertCode("\n        element.selectByVisibleText(\"" + data + "\")"
                 + "", footer);
     }
 
     @Override
     void writeInputjsEvent(String jsInput) {
-        ui.insertCode("\n        browser.executeScript(\"" + jsInput + "\");"
+        ui.insertCode("\n        browser.execute(\"" + jsInput + "\")"
                 + "", footer);
     }
 
@@ -70,9 +68,9 @@ class JsWriter extends DefaultWriter {
     void writeAlertClick(String question, boolean choice) {
         String action;
         if (choice) {
-            action = "        browser.acceptAlert();\n";
+            action = "        browser.acceptAlert()\n";
         } else {
-            action = "        browser.dismissAlert();\n";
+            action = "        browser.dismissAlert()\n";
         }
         ui.insertCode("\n        //alert:" + question + "\n"
                 + action
@@ -82,21 +80,21 @@ class JsWriter extends DefaultWriter {
     @Override
     void writeSwitchByIndex(int frame) {
         ui.insertCode("\n        //switch to:" + frame + "\n"
-                + "        browser.switchToFrame(" + frame + ");"
+                + "        browser.frame(" + frame + ")"
                 + "", footer);
     }
 
     @Override
     void writeSwitchBack() {
         ui.insertCode("\n        //switch back\n"
-                + "        browser.switchToParentFrame();"
+                + "        browser.frameParent()"
                 + "", footer);
     }
 
     @Override
     void writeSwitchWin(String title) {
         ui.insertCode("\n        //switch to:" + title + "\n"
-                + "        browser.switchWindow('" + title + "');"
+                + "        await browser.switchWindow('" + title + "')"
                 + "", footer);
     }
 
@@ -105,8 +103,29 @@ class JsWriter extends DefaultWriter {
         if (value != null) {
             value = "'" + value + "'";
         }
+        String line;
+        switch (method) {
+            case "checked":
+                if (value == null) {
+                    line = "        await expect(element).not.toBeChecked()";
+                } else {
+                    line = "        await expect(element).toBeChecked()";
+                }
+                break;
+            case "value":
+                line = "        await expect(element).toHaveValue(" + value + ")";
+                break;
+            case "href":
+                line = "        await expect(element).toHaveHref(" + value + ")";
+                break;
+            case "gettext":
+                line = "        await expect(element).toHaveText([" + value + "])";
+                break;
+            default:
+                line = "        await expect(element).toHaveAttr('" + method + "', " + value + ")";
+        }
         ui.insertCode("\n        //assert:" + value + "\n"
-                + "        assert.equal(element.getAttribute('" + method + "')," + value + ");"
+                + line
                 + "", footer);
     }
 
@@ -116,14 +135,14 @@ class JsWriter extends DefaultWriter {
             value = "'" + value + "'";
         }
         ui.insertCode("\n        //assert:" + value + "\n"
-                + "        assert.equal(browser.getTitle()," + value + ");"
+                + "        await expect(browser).toHaveTitle(" + value + ")"
                 + "", footer);
     }
 
     @Override
     void writeVerifyCookie(String name, String value) {
         ui.insertCode("\n        //assert:" + value + "\n"
-                + "        assert.equal(browser.getNamedCookie('" + name + "').value, '" + value.replaceAll("\"", "'") + "');"
+                + "        expect(browser.getCookies(['" + name + "'])).toHaveValue('" + value.replaceAll("\"", "'") + "')"
                 + "", footer);
     }
 
@@ -135,12 +154,12 @@ class JsWriter extends DefaultWriter {
     @Override
     void writeStart() {
         n++;
-        ui.insertCode("\n    it('test " + n + "', function () {", footer);
+        ui.insertCode("\n    it('test " + n + "', async () => {", footer);
     }
 
     @Override
     void writeEnd() {
-        ui.insertCode("\n    });\n", footer);
+        ui.insertCode("\n    })\n", footer);
     }
 
     String wdioMethod(String method, String attribute) {
