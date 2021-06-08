@@ -6,7 +6,7 @@ package objectivetester;
  */
 class JsWriter extends DefaultWriter {
     //browsermodel calls this and it updates the generated code
-    //Webdriver.io v4
+    //Webdriver.io v7
 
     private int n = 0;
 
@@ -17,7 +17,7 @@ class JsWriter extends DefaultWriter {
 
     @Override
     void writeHeader(String url, String browser) {
-        ui.addCode("describe('webdriver.io v4 test suite', () => {\n\n"
+        ui.addCode("describe('webdriver.io v7 test suite', () => {\n\n"
                 + "    before(async () => {\n"
                 + "        browser.setTimeout(\n"
                 + "            { 'implicit': 60000 },\n"
@@ -80,14 +80,14 @@ class JsWriter extends DefaultWriter {
     @Override
     void writeSwitchByIndex(int frame) {
         ui.insertCode("\n        //switch to:" + frame + "\n"
-                + "        browser.frame(" + frame + ")"
+                + "        await browser.switchToFrame(" + frame + ")"
                 + "", footer);
     }
 
     @Override
     void writeSwitchBack() {
         ui.insertCode("\n        //switch back\n"
-                + "        browser.frameParent()"
+                + "        await browser.switchToParentFrame()"
                 + "", footer);
     }
 
