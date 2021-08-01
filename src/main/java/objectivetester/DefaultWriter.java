@@ -84,7 +84,7 @@ public class DefaultWriter {
                 line = "        assertEquals(" + value + ",element.getText());";
                 break;
             default:
-                line = "        assertEquals(" + value + ",element.getAttribute(\"" + method + "\"))";
+                line = "        assertEquals(" + value + ",element.getAttribute(\"" + method + "\"));";
         }
         ui.insertCode("\n        //assert:" + value + "\n"
                 + line
