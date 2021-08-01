@@ -639,9 +639,9 @@ class BrowserDriver implements Runnable {
     private String[] elementFinder(WebElement webElement) {
         //uniquely elementFind the webElement by the most descriptive attribute
         //
-        //By.linkText
-        //By.name
         //By.id
+        //By.name
+        //By.linkText
         //By.cssSelector - alt
         //By.cssSelector - href
         //By.cssSelector - src
@@ -654,13 +654,13 @@ class BrowserDriver implements Runnable {
         String selector;
         String[] result = {null, null};
 
-        //linktext
-        if (webElement.getText() != null) {
-            elements = driver.findElements(By.linkText(webElement.getText()));
+        //id
+        if (!webElement.getAttribute("id").isEmpty()) {  //prevent FF crash
+            elements = driver.findElements(By.id(webElement.getAttribute("id")));
             if ((elements.size() == 1) && elements.contains(webElement)) {
-                //System.out.println("found linktext:" + elements.get(0).getText());
-                result[0] = "linkText";
-                result[1] = elements.get(0).getText();
+                //System.out.println("found id:" + elements.get(0).getAttribute("id"));
+                result[0] = "id";
+                result[1] = elements.get(0).getAttribute("id");
                 return result;
             }
         }
@@ -675,14 +675,14 @@ class BrowserDriver implements Runnable {
                 return result;
             }
         }
-
-        //id
-        if (!webElement.getAttribute("id").isEmpty()) {  //prevent FF crash
-            elements = driver.findElements(By.id(webElement.getAttribute("id")));
+        
+        //linktext
+        if (webElement.getText() != null) {
+            elements = driver.findElements(By.linkText(webElement.getText()));
             if ((elements.size() == 1) && elements.contains(webElement)) {
-                //System.out.println("found id:" + elements.get(0).getAttribute("id"));
-                result[0] = "id";
-                result[1] = elements.get(0).getAttribute("id");
+                //System.out.println("found linktext:" + elements.get(0).getText());
+                result[0] = "linkText";
+                result[1] = elements.get(0).getText();
                 return result;
             }
         }
