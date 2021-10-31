@@ -131,9 +131,9 @@ class EventListener extends MouseAdapter implements java.awt.event.ActionListene
         Object webElement = table.getModel().getValueAt(current, Const.TAB_WEBELEMENT);
         //clicking on an element
         if (e.getActionCommand().contentEquals(Const.CLICK)) {
-            if (element.contentEquals("link") || element.contentEquals("image") || element.contentEquals("anchor") || element.contentEquals("div") ||element.endsWith(":radio") || element.endsWith(":checkbox") || element.endsWith(":submit") || element.endsWith(":button") || element.endsWith(":reset")) {
-                //clickable
-                bd.click((WebElement) webElement, stack);
+            if (element.contains("date") || element.contains("datetime-local") || element.contains("email") || element.contains("file") || element.contains("month") || element.contains("number") || element.contains("password") || element.contains("search") || element.contains("tel") || element.contains("text") || element.contains("time") || element.contains("url") || element.contains("week")) {
+                //input element
+                bd.input((WebElement) webElement, stack);
             } else if (element.endsWith(":select-one")) {
                 //selection
                 bd.select((WebElement) webElement, stack);
@@ -144,8 +144,8 @@ class EventListener extends MouseAdapter implements java.awt.event.ActionListene
                 //special input
                 bd.inputjs((WebElement) webElement, stack);
             } else {
-                //general input element
-                bd.input((WebElement) webElement, stack);
+                //clickable
+                bd.click((WebElement) webElement, stack);
             }
         }
 

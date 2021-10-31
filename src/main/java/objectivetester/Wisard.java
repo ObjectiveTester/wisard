@@ -102,7 +102,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
             prefs.put("output", "junit");
             prefs.put("driverFF", "./geckodriver.exe");
             prefs.put("driverCR", "./chromedriver.exe");
-            prefs.put("driverED", "./MicrosoftWebDriver.exe");
+            prefs.put("driverED", "./msedgedriver.exe");
             prefs.putBoolean("showId", false);
             prefs.putBoolean("showInvis", false);
             prefs.put("defaultURL", "http://www.saucedemo.com");
@@ -112,7 +112,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         pathED.setText(prefs.get("driverED", ""));
         defaultURL.setText(prefs.get("defaultURL", ""));
         currentUrl.setText(prefs.get("defaultURL", ""));
-        customTags.setText(prefs.get("divtags", "id=shopping_cart_container, class=cart_quantity"));
+        CSSselectors.setText(prefs.get("cssselectors", "div[id=shopping_cart_container], div[class=cart_quantity]"));
         if (prefs.get("browser", "").contentEquals("FF")) {
             buttonFF.setSelected(true);
         }
@@ -186,8 +186,8 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         buttonSave = new javax.swing.JButton();
         buttonCancel = new javax.swing.JButton();
         pathED = new javax.swing.JTextField();
-        labelDIVtags = new javax.swing.JLabel();
-        customTags = new javax.swing.JTextField();
+        labelCSS = new javax.swing.JLabel();
+        CSSselectors = new javax.swing.JTextField();
         jToolBar1 = new javax.swing.JToolBar();
         labelUrl = new javax.swing.JLabel();
         currentUrl = new javax.swing.JTextField();
@@ -485,25 +485,25 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         panelSettings.add(pathED, gridBagConstraints);
 
-        labelDIVtags.setText("DIV tag selectors");
+        labelCSS.setText("CSS selectors");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 20);
-        panelSettings.add(labelDIVtags, gridBagConstraints);
+        panelSettings.add(labelCSS, gridBagConstraints);
 
-        customTags.setColumns(20);
-        customTags.setText("customTags");
-        customTags.setToolTipText("comma seperated list of DIV tags");
-        customTags.setMinimumSize(new java.awt.Dimension(166, 24));
+        CSSselectors.setColumns(20);
+        CSSselectors.setText("CSSselectors");
+        CSSselectors.setToolTipText("comma seperated list of selectors");
+        CSSselectors.setMinimumSize(new java.awt.Dimension(166, 24));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 100;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
-        panelSettings.add(customTags, gridBagConstraints);
+        panelSettings.add(CSSselectors, gridBagConstraints);
 
         javax.swing.GroupLayout dialogSettingsLayout = new javax.swing.GroupLayout(dialogSettings.getContentPane());
         dialogSettings.getContentPane().setLayout(dialogSettingsLayout);
@@ -672,7 +672,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
 
         //save new settings
         prefs.put("defaultURL", defaultURL.getText());
-        prefs.put("divtags", customTags.getText());
+        prefs.put("cssselectors", CSSselectors.getText());
             
         prefs.putBoolean("showId", checkBoxId.isSelected());
         prefs.putBoolean("showInvis", checkBoxInvis.isSelected());
@@ -846,6 +846,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField CSSselectors;
     private javax.swing.JRadioButton buttonCR;
     private javax.swing.JButton buttonCancel;
     private javax.swing.JButton buttonCool;
@@ -865,14 +866,13 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
     private javax.swing.JCheckBox checkBoxInvis;
     private javax.swing.JTextArea code;
     private javax.swing.JTextField currentUrl;
-    private javax.swing.JTextField customTags;
     private javax.swing.JTextField defaultURL;
     private javax.swing.JDialog dialogAbout;
     private javax.swing.JDialog dialogSettings;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JLabel labelCSS;
     private javax.swing.JLabel labelCopyright;
-    private javax.swing.JLabel labelDIVtags;
     private javax.swing.JLabel labelDefurl;
     private javax.swing.JLabel labelDesc;
     private javax.swing.JLabel labelDispopts;
@@ -1008,8 +1008,8 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
     }
 
     @Override
-    public String getCustomTags() {
-        return prefs.get("divtags", "");
+    public String getCSSselectors() {
+        return prefs.get("cssselectors", "");
     }
-
+    
 }

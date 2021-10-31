@@ -28,6 +28,6 @@ interface UserInterface {
 
     void errorMessage(String message);
     
-    String getCustomTags();
+    String getCSSselectors();
 
 }

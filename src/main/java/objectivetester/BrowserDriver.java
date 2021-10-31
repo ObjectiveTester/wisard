@@ -37,7 +37,8 @@ class BrowserDriver implements Runnable {
     UserInterface ui;
     DefaultWriter writer;
     boolean safe = false;
-    ArrayList<String> customTags;
+    ArrayList<String> CSSselectors;
+    ArrayList<WebElement> allElements;
 
     BrowserDriver(UserInterface ui) {
         this.ui = ui;
@@ -149,9 +150,12 @@ class BrowserDriver implements Runnable {
         if (driver != null) {
             safe = false;
 
-            //get list of custom tags to search for
-            String[] tags = ui.getCustomTags().split("\\s*,\\s*");
-            customTags = new ArrayList<>(Arrays.asList(tags));
+            //get list of CSS selectors to search for
+            String[] selectors = ui.getCSSselectors().split("\\s*,\\s*");
+            CSSselectors = new ArrayList<>(Arrays.asList(selectors));
+
+            //reset element list
+            allElements = new ArrayList<>();
 
             driver.manage().timeouts().implicitlyWait(Duration.ofMillis(10));
             //examine the root contents
@@ -163,7 +167,6 @@ class BrowserDriver implements Runnable {
 
     void examine(Object stack) {
         try {
-            List<WebElement> inputElements = new ArrayList<>();
             String value;
             driver.switchTo().defaultContent();
 
@@ -198,6 +201,7 @@ class BrowserDriver implements Runnable {
                 List<WebElement> links = (List<WebElement>) (js.executeScript("return document.links;"));
                 for (WebElement element : links) {
                     ui.addItem("link", stack, element.getAttribute("text").trim(), element.getAttribute("id"), element.getAttribute("href"), element, element.isDisplayed());
+                    allElements.add(element);
                 }
             } catch (Exception e) {
                 //ui.errorMessage("Failed to find links");
@@ -211,6 +215,7 @@ class BrowserDriver implements Runnable {
                 WebElement form = (WebElement) ((js.executeScript("return document.forms[" + i + "];")));
                 while (form != null) {
                     ui.addItem("form" + i, stack, form.getAttribute("name"), form.getAttribute("id"), "", form, form.isDisplayed());
+                    allElements.add(form);
                     //System.out.println("form " + i + ", " + Integer.parseInt((js.executeScript("return document.forms[" + i + "].length;")).toString()) + " elements");
 
                     List<WebElement> formElement = (List<WebElement>) (js.executeScript("return document.forms[" + i + "].elements;"));
@@ -222,7 +227,7 @@ class BrowserDriver implements Runnable {
                         }
 
                         ui.addItem("form" + i + ":" + element.getAttribute("type"), stack, element.getAttribute("name"), element.getAttribute("id"), value, element, element.isDisplayed());
-                        inputElements.add(element);
+                        allElements.add(element);
                     }
                     i++;
                     form = (WebElement) ((js.executeScript("return document.forms[" + i + "];")));
@@ -240,7 +245,7 @@ class BrowserDriver implements Runnable {
                 for (WebElement element : inputs) {
                     //see if we've added this webElement already
                     Boolean present = false;
-                    for (WebElement in : inputElements) {
+                    for (WebElement in : allElements) {
                         if (in.equals(element)) {
                             present = true;
                         }
@@ -252,7 +257,7 @@ class BrowserDriver implements Runnable {
                             value = element.getAttribute("value");
                         }
                         ui.addItem("input:" + element.getAttribute("type"), stack, element.getAttribute("name"), element.getAttribute("id"), value, element, element.isDisplayed());
-                        inputElements.add(element);
+                        allElements.add(element);
                     }
 
                 }
@@ -266,6 +271,7 @@ class BrowserDriver implements Runnable {
                 List<WebElement> images = (List<WebElement>) (js.executeScript("return document.images;"));
                 for (WebElement element : images) {
                     ui.addItem("image", stack, element.getAttribute("alt"), element.getAttribute("id"), element.getAttribute("src"), element, element.isDisplayed());
+                    allElements.add(element);
                 }
             } catch (Exception e) {
                 //ui.errorMessage("Failed to find images");
@@ -277,19 +283,24 @@ class BrowserDriver implements Runnable {
                 List<WebElement> anchors = (List<WebElement>) (js.executeScript("return document.anchors;"));
                 for (WebElement element : anchors) {
                     ui.addItem("anchor", stack, element.getAttribute("text"), element.getAttribute("id"), element.getAttribute("name"), element, element.isDisplayed());
+                    allElements.add(element);
                 }
             } catch (Exception e) {
                 //ui.errorMessage("Failed to find anchors");
             }
 
-            //custom - div tag
-            if (customTags.get(0).length() != 0) {
-                for (String customTag : customTags) {
+            //custom CSS selectors
+            if (CSSselectors.get(0).length() != 0) {
+                for (String item : CSSselectors) {
                     try {
-                        //custom  "div[<tag>]"
-                        List<WebElement> custom = (List<WebElement>) driver.findElements(By.cssSelector("div[" + customTag + "]"));
+                        List<WebElement> custom = (List<WebElement>) driver.findElements(By.cssSelector(item));
                         for (WebElement element : custom) {
-                            ui.addItem(element.getTagName().toLowerCase(), stack, element.getTagName(), customTag, element.getText().strip(), element, element.isDisplayed());
+                            String elementVal = element.getAttribute("value");
+                            if (elementVal == null) {
+                                elementVal = element.getText();
+                            }
+                            ui.addItem(element.getTagName().toLowerCase(), stack, element.getAttribute("id"), item, elementVal, element, element.isDisplayed());
+                            allElements.add(element);
                         }
                     } catch (Exception e) {
                         //ui.errorMessage("Failed to find custom");
@@ -373,7 +384,7 @@ class BrowserDriver implements Runnable {
         }
     }
 
-    String[] elementFind(WebElement webElement, Object stack, String action) {
+    RichElement elementFind(WebElement webElement, Object stack, String action) {
         driver.switchTo().defaultContent();
         //see if we can elementFind it first
         if (stack.getClass().equals(ArrayList.class)) {
@@ -381,9 +392,9 @@ class BrowserDriver implements Runnable {
         }
         js.executeScript("arguments[0].scrollIntoView(true);", webElement);
         String name = webElement.getText();
-        String method[] = elementFinder(webElement);
+        RichElement ele = elementFinder(webElement);
         driver.switchTo().defaultContent();
-        if (method[0] != null) {
+        if (ele.method != null) {
             //we can elementFind it, so write code to navigate
             if (stack.getClass().equals(ArrayList.class)) {
                 //navigate to the webElement
@@ -391,7 +402,7 @@ class BrowserDriver implements Runnable {
             }
             if (!action.equals(Const.CLICK)) {
                 //write code to get the element
-                writer.writeFindEvent(method[0], method[1]);
+                writer.writeFindEvent(ele.method, ele.attribute);
             }
 
             //if we're just doing a elementFind, tidy up
@@ -409,7 +420,7 @@ class BrowserDriver implements Runnable {
             ui.errorMessage("Unable to uniquely identify " + name);
             writer.comment("Unable to uniquely identify " + name);
         }
-        return method;
+        return ele;
     }
 
     void find(WebElement webElement, Object stack, String action) {
@@ -420,9 +431,9 @@ class BrowserDriver implements Runnable {
 
     void click(WebElement webElement, Object stack) {
         writer.writeStart();
-        String method[] = elementFind(webElement, stack, Const.CLICK);
-        if (method[0] != null) {
-            writer.writeClickEvent(method[0], method[1]);
+        RichElement ele = elementFind(webElement, stack, Const.CLICK);
+        if (ele.method != null) {
+            writer.writeClickEvent(ele.method, ele.attribute);
             if (driver.getClass().getName().contains("SafariDriver")) {
                 //workaround for a click problem with Safari that only happens in Wisard
                 js.executeScript("arguments[0].click();", webElement);
@@ -463,8 +474,8 @@ class BrowserDriver implements Runnable {
         String data = ui.enterValue(webElement.getAttribute("name"));
         if (data != null) {
             writer.writeStart();
-            String method[] = elementFind(webElement, stack, "");
-            if (method[0] != null) {
+            RichElement ele = elementFind(webElement, stack, "");
+            if (ele.method != null) {
                 writer.writeInputEvent(data);
                 if (stack.getClass().equals(ArrayList.class)) {
                     //if we had to navigate here, switch back
@@ -482,19 +493,19 @@ class BrowserDriver implements Runnable {
         String data = ui.enterValue(webElement.getAttribute("name"));
         if (data != null) {
             writer.writeStart();
-            String method[] = elementFind(webElement, stack, "click");
-            if (method[0] != null) {
+            RichElement ele = elementFind(webElement, stack, "click");
+            if (ele.method != null) {
 
                 //this only works if the first match is the right element
-                String jsInput = "javascript:var e=document.getElementsByName(\"" + method[1] + "\");e[0].value=\"" + data + "\";";
+                String jsInput = "javascript:var e=document.getElementsByName(\"" + ele.attribute + "\");e[0].value=\"" + data + "\";";
 
-                if (method[0].contentEquals("id")) {
-                    jsInput = "javascript:document.getElementById(\"" + method[1] + "\").value=\"" + data + "\";";
+                if (ele.method.contentEquals("id")) {
+                    jsInput = "javascript:document.getElementById(\"" + ele.attribute + "\").value=\"" + data + "\";";
                 }
-                if (method[0].contentEquals("cssSelector")) {
+                if (ele.method.contentEquals("cssSelector")) {
                     jsInput = jsInput.replace("getElementsByName", "querySelectorAll");
                 }
-                if (method[0].contentEquals("className")) {
+                if (ele.method.contentEquals("className")) {
                     jsInput = jsInput.replace("getElementsByName", "getElementsByClassName");
                 }
                 writer.writeInputjsEvent(jsInput.replace("\"", "\\\""));
@@ -522,8 +533,8 @@ class BrowserDriver implements Runnable {
         String data = ui.enterSelection(webElement.getAttribute("name"), choices);
         if (data != null) {
             writer.writeStart();
-            String method[] = elementFind(webElement, stack, "");
-            if (method[0] != null) {
+            RichElement ele = elementFind(webElement, stack, "");
+            if (ele.method != null) {
                 writer.writeSelectEvent(data);
                 if (stack.getClass().equals(ArrayList.class)) {
                     //if we had to navigate here, switch back
@@ -539,8 +550,8 @@ class BrowserDriver implements Runnable {
 
     void verify(WebElement webElement, Object stack, String element, String expected) {
         writer.writeStart();
-        String method[] = elementFind(webElement, stack, "");
-        if (method[0] != null) {
+        RichElement ele = elementFind(webElement, stack, "");
+        if (ele.method != null) {
             String verifymethod;
             if (element.contains("link")) {
                 verifymethod = "href";
@@ -550,7 +561,7 @@ class BrowserDriver implements Runnable {
                 verifymethod = "name";
             } else if (element.contains("radio") || element.contains("checkbox")) {
                 verifymethod = "checked";
-            } else if (element.contains("div")) {
+            } else if (webElement.getAttribute("value") == null) {
                 verifymethod = "gettext";
             } else {
                 verifymethod = "value";
@@ -587,12 +598,10 @@ class BrowserDriver implements Runnable {
             traverse((ArrayList) stack, false);
         }
 
-        String method[] = elementFinder(webElement);
-
-        if (method[0] == null) {
-            method[0] = "not found!";
-        } else {
-            method[0] = "By." + method[0];
+        RichElement ele = elementFinder(webElement);
+        String method = "not found!";
+        if (ele.method != null) {
+            method = "By." + ele.method + "(\"" + ele.attribute + "\")";
         }
 
         String message = "<html><b>Element:</b> " + element
@@ -600,7 +609,7 @@ class BrowserDriver implements Runnable {
                 + "<br><b>ID:</b> " + id
                 + "<br><b>Value:</b> " + value
                 + "<br><b>Location:</b> " + stack.toString()
-                + "<br><b>Find Method:</b> " + method[0]
+                + "<br><b>Find Method:</b> " + method
                 + "<br><b>Outer HTML:</b>"
                 + "<br></html>" + webElement.getAttribute("outerHTML");
 
@@ -636,7 +645,7 @@ class BrowserDriver implements Runnable {
         ui.rescan();
     }
 
-    private String[] elementFinder(WebElement webElement) {
+    private RichElement elementFinder(WebElement webElement) {
         //uniquely elementFind the webElement by the most descriptive attribute
         //
         //By.id
@@ -650,18 +659,16 @@ class BrowserDriver implements Runnable {
         //By.cssSelector - class
         //By.cssSelector - type
         //By.cssSelector - value
+        //By.cssSelector - custom
         List<WebElement> elements;
         String selector;
-        String[] result = {null, null};
 
         //id
         if (!webElement.getAttribute("id").isEmpty()) {  //prevent FF crash
             elements = driver.findElements(By.id(webElement.getAttribute("id")));
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found id:" + elements.get(0).getAttribute("id"));
-                result[0] = "id";
-                result[1] = elements.get(0).getAttribute("id");
-                return result;
+                return new RichElement("id", elements.get(0).getAttribute("id"));
             }
         }
 
@@ -670,20 +677,16 @@ class BrowserDriver implements Runnable {
             elements = driver.findElements(By.name(webElement.getAttribute("name")));
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found frames:" + elements.get(0).getAttribute("frames"));
-                result[0] = "name";
-                result[1] = elements.get(0).getAttribute("name");
-                return result;
+                return new RichElement("name", elements.get(0).getAttribute("name"));
             }
         }
-        
+
         //linktext
         if (webElement.getText() != null) {
             elements = driver.findElements(By.linkText(webElement.getText()));
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found linktext:" + elements.get(0).getText());
-                result[0] = "linkText";
-                result[1] = elements.get(0).getText();
-                return result;
+                return new RichElement("linkText", elements.get(0).getText());
             }
         }
 
@@ -693,9 +696,7 @@ class BrowserDriver implements Runnable {
             elements = driver.findElements(By.cssSelector(selector));
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found cssSelector:" + selector);
-                result[0] = "cssSelector";
-                result[1] = "[alt='" + elements.get(0).getAttribute("alt") + "']";
-                return result;
+                return new RichElement("cssSelector", "[alt='" + elements.get(0).getAttribute("alt") + "']");
             }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
@@ -708,9 +709,7 @@ class BrowserDriver implements Runnable {
             elements = driver.findElements(By.cssSelector(selector));
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found cssSelector:" + selector);
-                result[0] = "cssSelector";
-                result[1] = "[href='" + elements.get(0).getAttribute("href") + "']";
-                return result;
+                return new RichElement("cssSelector", "[href='" + elements.get(0).getAttribute("href") + "']");
             }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
@@ -721,9 +720,7 @@ class BrowserDriver implements Runnable {
             elements = driver.findElements(By.cssSelector(selector));
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found cssSelector:" + selector);
-                result[0] = "cssSelector";
-                result[1] = "[href='" + elements.get(0).getAttribute("href").replaceAll("http.*" + root + "/", "") + "']";
-                return result;
+                return new RichElement("cssSelector", "[href='" + elements.get(0).getAttribute("href").replaceAll("http.*" + root + "/", "") + "']");
             }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
@@ -734,9 +731,7 @@ class BrowserDriver implements Runnable {
             elements = driver.findElements(By.cssSelector(selector));
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found cssSelector:" + selector);
-                result[0] = "cssSelector";
-                result[1] = "[href='" + elements.get(0).getAttribute("href").replaceAll("http.*" + root, "") + "']";
-                return result;
+                return new RichElement("cssSelector", "[href='" + elements.get(0).getAttribute("href").replaceAll("http.*" + root, "") + "']");
             }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
@@ -747,9 +742,7 @@ class BrowserDriver implements Runnable {
             elements = driver.findElements(By.cssSelector(selector));
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found cssSelector:" + selector);
-                result[0] = "cssSelector";
-                result[1] = "[src='" + elements.get(0).getAttribute("src") + "']";
-                return result;
+                return new RichElement("cssSelector", "[src='" + elements.get(0).getAttribute("src") + "']");
             }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
@@ -760,9 +753,7 @@ class BrowserDriver implements Runnable {
             elements = driver.findElements(By.cssSelector(selector));
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found cssSelector:" + selector);
-                result[0] = "cssSelector";
-                result[1] = "[src='" + elements.get(0).getAttribute("src").replaceAll("http.*" + root + "/", "") + "']";
-                return result;
+                return new RichElement("cssSelector", "[src='" + elements.get(0).getAttribute("src").replaceAll("http.*" + root + "/", "") + "']");
             }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
@@ -773,9 +764,7 @@ class BrowserDriver implements Runnable {
             elements = driver.findElements(By.cssSelector(selector));
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found cssSelector:" + selector);
-                result[0] = "cssSelector";
-                result[1] = "[src='" + elements.get(0).getAttribute("src").replaceAll("http.*" + root, "") + "']";
-                return result;
+                return new RichElement("cssSelector", "[src='" + elements.get(0).getAttribute("src").replaceAll("http.*" + root, "") + "']");
             }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
@@ -786,9 +775,7 @@ class BrowserDriver implements Runnable {
             elements = driver.findElements(By.cssSelector(selector));
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found cssSelector:" + selector);
-                result[0] = "cssSelector";
-                result[1] = "[title='" + elements.get(0).getAttribute("title") + "']";
-                return result;
+                return new RichElement("cssSelector", "[title='" + elements.get(0).getAttribute("title") + "']");
             }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
@@ -798,9 +785,7 @@ class BrowserDriver implements Runnable {
             elements = driver.findElements(By.className(webElement.getAttribute("className")));
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found className:" + elements.get(0).getAttribute("className"));
-                result[0] = "className";
-                result[1] = elements.get(0).getAttribute("className");
-                return result;
+                return new RichElement("className", elements.get(0).getAttribute("className"));
             }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
@@ -810,9 +795,7 @@ class BrowserDriver implements Runnable {
             elements = driver.findElements(By.cssSelector(selector));
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found cssSelector:" + selector);
-                result[0] = "cssSelector";
-                result[1] = "." + elements.get(0).getAttribute("className").replace(" ", ".");
-                return result;
+                return new RichElement("className", "." + elements.get(0).getAttribute("className").replace(" ", "."));
             }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
@@ -823,9 +806,7 @@ class BrowserDriver implements Runnable {
             elements = driver.findElements(By.cssSelector(selector));
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found cssSelector:" + selector);
-                result[0] = "cssSelector";
-                result[1] = "[class='" + elements.get(0).getAttribute("class") + "']";
-                return result;
+                return new RichElement("cssSelector", "[class='" + elements.get(0).getAttribute("class") + "']");
             }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
@@ -836,9 +817,7 @@ class BrowserDriver implements Runnable {
             elements = driver.findElements(By.cssSelector(selector));
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found cssSelector:" + selector);
-                result[0] = "cssSelector";
-                result[1] = "[type='" + elements.get(0).getAttribute("type") + "']";
-                return result;
+                return new RichElement("cssSelector", "[type='" + elements.get(0).getAttribute("type") + "']");
             }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
@@ -849,31 +828,25 @@ class BrowserDriver implements Runnable {
             elements = driver.findElements(By.cssSelector(selector));
             if ((elements.size() == 1) && elements.contains(webElement)) {
                 //System.out.println("found cssSelector:" + selector);
-                result[0] = "cssSelector";
-                result[1] = "[value='" + elements.get(0).getAttribute("value") + "']";
-                return result;
+                return new RichElement("cssSelector", "[value='" + elements.get(0).getAttribute("value") + "']");
             }
         } catch (InvalidSelectorException | NullPointerException e) {
         }
 
-        //custom - div tag
-        for (String customTag : customTags) {
+        //custom CSS selectors
+        for (String item : CSSselectors) {
             try {
-                selector = "div[" + customTag + "='" + webElement.getAttribute(customTag) + "'";
-                elements = driver.findElements(By.cssSelector(selector));
+                elements = driver.findElements(By.cssSelector(item));
                 //System.out.println("len:" + elements.size());
                 if ((elements.size() == 1) && elements.contains(webElement)) {
-                    //System.out.println("found div:" + selector);
-                    result[0] = "cssSelector";
-                    result[1] = "div[" + customTag + "=\"" + elements.get(0).getAttribute(customTag) + "\"";
-                    return result;
-                }
+                    return new RichElement("cssSelector", item.replace("\"", "\\\""));
+               }
             } catch (InvalidSelectorException | NullPointerException e) {
             }
         }
 
         //implement other methods?
-        return result;
+        return new RichElement(null, null);
     }
 
 }

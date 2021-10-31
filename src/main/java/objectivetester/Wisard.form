@@ -425,9 +425,9 @@
                 </Constraint>
               </Constraints>
             </Component>
-            <Component class="javax.swing.JLabel" name="labelDIVtags">
+            <Component class="javax.swing.JLabel" name="labelCSS">
               <Properties>
-                <Property name="text" type="java.lang.String" value="DIV tag selectors"/>
+                <Property name="text" type="java.lang.String" value="CSS selectors"/>
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -435,11 +435,11 @@
                 </Constraint>
               </Constraints>
             </Component>
-            <Component class="javax.swing.JTextField" name="customTags">
+            <Component class="javax.swing.JTextField" name="CSSselectors">
               <Properties>
                 <Property name="columns" type="int" value="20"/>
-                <Property name="text" type="java.lang.String" value="customTags"/>
-                <Property name="toolTipText" type="java.lang.String" value="comma seperated list of DIV tags"/>
+                <Property name="text" type="java.lang.String" value="CSSselectors"/>
+                <Property name="toolTipText" type="java.lang.String" value="comma seperated list of selectors"/>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[166, 24]"/>
                 </Property>

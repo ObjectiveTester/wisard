@@ -79,7 +79,7 @@ class Test5Writer extends DefaultWriter {
                 + driverInit
                 + "        js = (JavascriptExecutor) driver;\n"
                 + "        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));\n"
-                + "        driver.manage().timeouts().setScriptTimeout(Duration.ofSeconds(10));\n"
+                + "        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(10));\n"
                 + "        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));\n"
                 + "        driver.get(\"" + url + "\");\n"
                 + "    }\n\n"
