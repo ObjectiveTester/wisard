@@ -18,9 +18,9 @@ Build a package from the command line with:
 Running Wisard
 ==============
 
-Once built, either double-click 'Wisard-1.5.jar' or start from the command line with:
+Once built, either double-click 'Wisard-1.6.jar' or start from the command line with:
 
-    java -jar target/Wisard-1.5.jar
+    java -jar target/Wisard-1.6.jar
     
 
 Then enter a web URL and click the find icon
@@ -33,7 +33,7 @@ As you set and verify element values, the right hand pane is updated with jUnit 
 
 Wisard can set and verify input elements, verify and click links and anchors, and verify image elements.
 
-By correctly setting the 'driver' settings in the 'Settings' window, Wisard can open and record scripts in 'Firefox', 'Chrome', 'Internet Explorer', 'Edge' and 'Safari' - download the correct drivers from http://docs.seleniumhq.org/download/
+Wisard can open and record scripts in 'Firefox', 'Chrome', 'Internet Explorer', 'Edge' and 'Safari', drivers are auto-downloaded by Selenium Manager, or can be manually overridden by setting the 'driver' path setting in the 'Settings' window, and  downloading the correct drivers for your OS.
 
 
 Screenshots and more can be found here : http://objectivetester.github.io/wisard
