@@ -12,7 +12,7 @@ import java.util.Set;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
-import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.JavascriptExecutor;
@@ -27,6 +27,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.NoSuchDriverException;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.*;
 
@@ -64,13 +65,15 @@ class BrowserDriver implements Runnable {
     boolean initFF(String url, String path) {
         //FF
         try {
-            System.setProperty("webdriver.gecko.driver", path);
+            if (!path.isEmpty()) {
+                System.setProperty("webdriver.gecko.driver", path);
+            }
             driver = new FirefoxDriver();
             js = (JavascriptExecutor) driver;
             writer.writeHeader(url, "FF");
             driver.get(url);
-        } catch (IllegalStateException ise) {
-            System.err.println(ise);
+        } catch (NoSuchDriverException nde) {
+            System.err.println(nde);
             ui.errorMessage("Path to Gecko driver is invalid, check settings.");
             return false;
         } catch (InvalidArgumentException iae) {
@@ -87,13 +90,15 @@ class BrowserDriver implements Runnable {
     boolean initCR(String url, String path) {
         //Chrome
         try {
-            System.setProperty("webdriver.chrome.driver", path);
+            if (!path.isEmpty()) {
+                System.setProperty("webdriver.chrome.driver", path);
+            }
             driver = new ChromeDriver();
             js = (JavascriptExecutor) driver;
             writer.writeHeader(url, "CR");
             driver.get(url);
-        } catch (IllegalStateException ise) {
-            System.err.println(ise);
+        } catch (NoSuchDriverException nde) {
+            System.err.println(nde);
             ui.errorMessage("Path to Chrome driver is invalid, check settings.");
             return false;
         } catch (InvalidArgumentException iae) {
@@ -110,12 +115,15 @@ class BrowserDriver implements Runnable {
     boolean initED(String url, String path) {
         //Edge
         try {
-            System.setProperty("webdriver.edge.driver", path);
-            driver = new EdgeDriver();
+            if (!path.isEmpty()) {
+                System.setProperty("webdriver.edge.driver", path);
+            }
+                driver = new EdgeDriver();
             js = (JavascriptExecutor) driver;
             writer.writeHeader(url, "ED");
             driver.get(url);
-        } catch (IllegalStateException ise) {
+        } catch (NoSuchDriverException nde) {
+            System.err.println(nde);
             ui.errorMessage("Path to Edge driver is invalid, check settings.");
             return false;
         } catch (InvalidArgumentException iae) {
@@ -335,7 +343,7 @@ class BrowserDriver implements Runnable {
                 }
             }
 
-        } catch (TimeoutException | StaleElementReferenceException | ElementNotVisibleException e) {
+        } catch (TimeoutException | StaleElementReferenceException | ElementNotInteractableException e) {
             ui.rescan();
         } catch (WebDriverException e) {
             ui.abort();
@@ -378,7 +386,7 @@ class BrowserDriver implements Runnable {
             js.executeScript("arguments[0].setAttribute('style', 'arguments[1]');", webElement, style);
         } catch (TimeoutException | StaleElementReferenceException e) {
             ui.rescan();
-        } catch (ElementNotVisibleException | InterruptedException e) {
+        } catch (ElementNotInteractableException | InterruptedException e) {
         } catch (WebDriverException e) {
             ui.abort();
         }
@@ -624,7 +632,7 @@ class BrowserDriver implements Runnable {
             driver.switchTo().defaultContent();
         } catch (TimeoutException | StaleElementReferenceException e) {
             ui.rescan();
-        } catch (ElementNotVisibleException e) {
+        } catch (ElementNotInteractableException e) {
         } catch (WebDriverException e) {
             ui.abort();
         }
@@ -637,7 +645,7 @@ class BrowserDriver implements Runnable {
             writer.writeSwitchWin(title);
             writer.writeEnd();
             driver.switchTo().window(handle);
-        } catch (TimeoutException | StaleElementReferenceException | ElementNotVisibleException e) {
+        } catch (TimeoutException | StaleElementReferenceException | ElementNotInteractableException e) {
             //do nothing, we're rescanning anyway
         } catch (WebDriverException e) {
             ui.abort();

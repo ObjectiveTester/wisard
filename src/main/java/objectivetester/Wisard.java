@@ -19,6 +19,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.text.BadLocationException;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
 
 /**
  *
@@ -100,9 +102,9 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
             //System.out.println("no prefs, writing defaults");
             prefs.put("browser", "FF");
             prefs.put("output", "junit");
-            prefs.put("driverFF", "./geckodriver.exe");
-            prefs.put("driverCR", "./chromedriver.exe");
-            prefs.put("driverED", "./msedgedriver.exe");
+            prefs.put("driverFF", "");
+            prefs.put("driverCR", "");
+            prefs.put("driverED", "");
             prefs.putBoolean("showId", false);
             prefs.putBoolean("showInvis", false);
             prefs.put("defaultURL", "http://www.saucedemo.com");
@@ -231,7 +233,7 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         gridBagConstraints.gridy = 1;
         panelAbout.add(labelDesc, gridBagConstraints);
 
-        labelCopyright.setText("© Steve Mellor 2014-2021");
+        labelCopyright.setText("© Steve Mellor 2014-2023");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -525,7 +527,6 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setIconImage(icon.getImage());
 
-        jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
         labelUrl.setText("URL");
@@ -826,7 +827,13 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
 
         try {
-            javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+            //javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+            if (Theme.light()) {
+                javax.swing.UIManager.setLookAndFeel("com.formdev.flatlaf.FlatLightLaf");
+            } else {
+                javax.swing.UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarkLaf");
+            }
+            
 //            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
 //                if ("Nimbus".equals(info.getName())) {
 //                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
@@ -911,7 +918,11 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
     @Override
     public void addItem(String element, Object stack, String name, String id, String value, Object webElement, Boolean displayed) {
         //adds content to the elements table
-        tableElements.setForeground(Color.LIGHT_GRAY);
+        if (Theme.light()) {
+            tableElements.setForeground(Color.LIGHT_GRAY);
+        } else {
+            tableElements.setForeground(Color.GRAY);
+        }
         if ((!displayed) && (prefs.getBoolean("showInvis", false))) {
             element = Const.INVISIBLE + element;
             Object item = new Object[]{element, stack, name, id, value, webElement};
@@ -1004,7 +1015,12 @@ public class Wisard extends javax.swing.JFrame implements UserInterface {
 
     @Override
     public void finished() {
-        tableElements.setForeground(Color.BLACK);
+        if (Theme.light()) {
+            tableElements.setForeground(Color.BLACK);
+        } else {
+            tableElements.setForeground(Color.LIGHT_GRAY);
+        }
+        
     }
 
     @Override

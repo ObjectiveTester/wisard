@@ -22,25 +22,25 @@ class ScriptWriter extends DefaultWriter {
 
             case "FF":
                 driverImport = "import org.openqa.selenium.firefox.FirefoxDriver;\n";
-                sysProp = "        System.setProperty(\"webdriver.gecko.driver\", \""+System.getProperty("webdriver.gecko.driver")+"\");\n";
+                if (System.getProperty("webdriver.gecko.driver") != null) {
+                    sysProp = "        System.setProperty(\"webdriver.gecko.driver\", \""+System.getProperty("webdriver.gecko.driver")+"\");\n";
+                }
                 driverInit = "        WebDriver driver = new FirefoxDriver();\n";
                 break;
 
             case "CR":
                 driverImport = "import org.openqa.selenium.chrome.ChromeDriver;\n";
-                sysProp = "        System.setProperty(\"webdriver.chrome.driver\", \""+System.getProperty("webdriver.chrome.driver")+"\");\n";
+                if (System.getProperty("webdriver.chrome.driver") != null) {
+                    sysProp = "        System.setProperty(\"webdriver.chrome.driver\", \""+System.getProperty("webdriver.chrome.driver")+"\");\n";
+                }
                 driverInit = "        WebDriver driver = new ChromeDriver();\n";
-                break;
-
-            case "IE":
-                driverImport = "import org.openqa.selenium.ie.InternetExplorerDriver;\n";
-                sysProp = "        System.setProperty(\"webdriver.ie.driver\", \""+System.getProperty("webdriver.ie.driver")+"\");\n";
-                driverInit = "        WebDriver driver = new InternetExplorerDriver();\n";
                 break;
 
             case "ED":
                 driverImport = "import org.openqa.selenium.edge.EdgeDriver;\n";
-                sysProp = "        System.setProperty(\"webdriver.edge.driver\", \""+System.getProperty("webdriver.edge.driver")+"\");\n";
+                if (System.getProperty("webdriver.edge.driver") != null) {
+                    sysProp = "        System.setProperty(\"webdriver.edge.driver\", \""+System.getProperty("webdriver.edge.driver")+"\");\n";
+                }
                 driverInit = "        WebDriver driver = new EdgeDriver();\n";
                 break;
 
@@ -50,7 +50,7 @@ class ScriptWriter extends DefaultWriter {
                 break;
         }
 
-        ui.addCode("import java.util.concurrent.TimeUnit;\n"
+        ui.addCode("import java.time.Duration;\n"
                 + driverImport
                 + "import org.openqa.selenium.JavascriptExecutor;\n"
                 + "import org.openqa.selenium.WebDriver;\n"
@@ -66,9 +66,9 @@ class ScriptWriter extends DefaultWriter {
                 + sysProp
                 + driverInit
                 + "        JavascriptExecutor js = (JavascriptExecutor) driver;\n"
-                + "        driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);\n"
-                + "        driver.manage().timeouts().setScriptTimeout(60, TimeUnit.SECONDS);\n"
-                + "        driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);\n"
+                + "        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));\n"
+                + "        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(10));\n"
+                + "        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));\n"
                 + "        driver.get(\"" + url + "\");\n\n\n"
                 + "        driver.quit();\n"
                 + "    }\n"

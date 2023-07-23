@@ -25,19 +25,25 @@ class Test5Writer extends DefaultWriter {
 
             case "FF":
                 driverImport = "import org.openqa.selenium.firefox.FirefoxDriver;\n";
-                sysProp = "        System.setProperty(\"webdriver.gecko.driver\", \"" + System.getProperty("webdriver.gecko.driver") + "\");\n";
+                if (System.getProperty("webdriver.gecko.driver") != null) {
+                    sysProp = "        System.setProperty(\"webdriver.gecko.driver\", \"" + System.getProperty("webdriver.gecko.driver") + "\");\n";
+                }
                 driverInit = "        driver = new FirefoxDriver();\n";
                 break;
 
             case "CR":
                 driverImport = "import org.openqa.selenium.chrome.ChromeDriver;\n";
-                sysProp = "        System.setProperty(\"webdriver.chrome.driver\", \"" + System.getProperty("webdriver.chrome.driver") + "\");\n";
+                if (System.getProperty("webdriver.chrome.driver") != null) {
+                    sysProp = "        System.setProperty(\"webdriver.chrome.driver\", \"" + System.getProperty("webdriver.chrome.driver") + "\");\n";
+                }
                 driverInit = "        driver = new ChromeDriver();\n";
                 break;
 
             case "ED":
                 driverImport = "import org.openqa.selenium.edge.EdgeDriver;\n";
-                sysProp = "        System.setProperty(\"webdriver.edge.driver\", \"" + System.getProperty("webdriver.edge.driver") + "\");\n";
+                if (System.getProperty("webdriver.edge.driver") != null) {
+                    sysProp = "        System.setProperty(\"webdriver.edge.driver\", \"" + System.getProperty("webdriver.edge.driver") + "\");\n";
+                }
                 driverInit = "        WebDriver driver = new EdgeDriver();\n";
                 break;
 
