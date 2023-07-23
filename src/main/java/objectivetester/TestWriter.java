@@ -53,7 +53,7 @@ class TestWriter extends DefaultWriter {
                 break;
         }
 
-        ui.addCode("import java.time.Duration;;\n"
+        ui.addCode("import java.time.Duration;\n"
                 + driverImport
                 + "import org.openqa.selenium.JavascriptExecutor;\n"
                 + "import org.openqa.selenium.WebDriver;\n"
